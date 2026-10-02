@@ -29,7 +29,7 @@ export function BankingPanel(): JSX.Element {
         }
         setMessage(loaded.message);
       } catch {
-        setMessage("Device storage is unavailable. You can still explore the demo concepts.");
+        setMessage("Device storage is unavailable. You can still explore the account concepts.");
       }
     }, 0);
     return () => window.clearTimeout(timer);
@@ -90,7 +90,7 @@ export function BankingPanel(): JSX.Element {
   };
 
   return <section className="plan-detail" aria-labelledby="banking-heading">
-    <div className="section-heading"><div><span className="eyebrow">BANKING · OPTIONAL</span><h2 id="banking-heading">Prepare your banking shortlist.</h2></div><span className="outline-badge">DEMONSTRATION CONCEPTS</span></div>
+    <div className="section-heading"><div><span className="eyebrow">BANKING · OPTIONAL</span><h2 id="banking-heading">Prepare your banking shortlist.</h2></div><span className="outline-badge">ACCOUNT IDEAS</span></div>
     <p className="inline-note">Nori can organise account questions around your banking preferences. These are synthetic bundles, with no real offer, quote or approval. They do not change your relocation costs or cash projection.</p>
     <details style={{ marginTop: 20 }} open={!!committed || undefined}>
       <summary className="text-link" style={{ cursor: "pointer", minHeight: 40 }}><Landmark size={15} aria-hidden="true" />Tell Nori what you need from banking</summary>
@@ -106,13 +106,13 @@ export function BankingPanel(): JSX.Element {
             {draft.scoreStatus === "available" && <div className="field"><label className="field-label" htmlFor="banking-score">Current report score <span className="field-optional">Optional</span></label><input id="banking-score" type="number" inputMode="numeric" step={1} min={CREDIT_SCORE_RANGE.min} max={CREDIT_SCORE_RANGE.max} value={scoreText} placeholder="Leave blank if you prefer" onChange={event => { setScoreText(event.target.value); setDirty(true); setErrors({}); setMessage("Banking changes have not been applied yet."); }} aria-invalid={!!errors.creditScore} aria-describedby="banking-score-help" /><p className="field-help" id="banking-score-help">Current Credit Score 3i range: 300–850. Use the number on your current report; no report upload is needed.</p>{errors.creditScore && <p className="inline-note" role="alert">{errors.creditScore}</p>}</div>}
           </div>
           <fieldset className="field" style={{ border: 0, padding: 0, margin: 0 }}><legend className="field-label">What would you like to compare? <span className="field-optional">Optional</span></legend><div className="choice-grid">{bankingFeatures.map(feature => <label key={feature.id} className="checkbox-row"><input type="checkbox" checked={draft.features.includes(feature.id)} onChange={event => change({ features: event.target.checked ? [...draft.features, feature.id] : draft.features.filter(value => value !== feature.id) })} />{feature.label}</label>)}</div><p className="field-help">These preferences organise questions. Cashback, savings terms and funding availability still require a real provider&apos;s confirmation.</p></fieldset>
-          <div className="button-row"><Button type="submit">Prepare demo comparison <ArrowRight size={14} aria-hidden="true" /></Button><Button type="button" variant="ghost" onClick={clear}>Clear banking preferences</Button></div>
+          <div className="button-row"><Button type="submit">Prepare comparison <ArrowRight size={14} aria-hidden="true" /></Button><Button type="button" variant="ghost" onClick={clear}>Clear banking preferences</Button></div>
           {message && <p className="field-help" role="status" aria-live="polite">{message}</p>}
         </div>
       </form>
     </details>
     {!!results.length && <div style={{ marginTop: 20 }}>
-      <div className="section-heading"><h3 style={{ fontSize: 16 }}>Your demo account concepts</h3><span className="muted">{dirty ? "Previous comparison. Apply your changes to update." : "Ordered by account type and selected features."}</span></div>
+      <div className="section-heading"><h3 style={{ fontSize: 16 }}>Your account concepts</h3><span className="muted">{dirty ? "Previous comparison. Apply your changes to update." : "Ordered by account type and selected features."}</span></div>
       <p className="field-help" style={{ marginBottom: 14 }}>Your prepared context: {committed!.existingBanks ? `existing banks ${committed!.existingBanks}; ` : "existing banks not supplied; "}{committed!.creditScore !== null ? `optional supplied score ${committed!.creditScore}; ` : "score not supplied; "}{committed!.features.length ? `topics ${committed!.features.map(feature => bankingFeatures.find(item => item.id === feature)!.label.toLowerCase()).join(", ")}.` : "no preferred features set."} The score remains separate from ordering and eligibility.</p>
       <div className="field-grid" style={{ marginBottom: 20 }}>
         {committed!.existingBanks && <label className="checkbox-row"><input type="checkbox" checked={includeExistingBanks} onChange={event => setIncludeExistingBanks(event.target.checked)} />Include my existing bank names in copied questions</label>}

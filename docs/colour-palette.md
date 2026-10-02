@@ -19,17 +19,16 @@ Inter is the sans-serif typeface; question headings, choice labels and the wordm
 | General supporting text | `#444340` | Captions and notices |
 | Placeholder text | `#A7A39B` | Empty inline answers |
 
-## Ink tree and Nori
+## Branch timeline and Nori
 
-The tree is defined in [move-tree.tsx](../src/components/move-tree.tsx) and its [scoped stylesheet](../src/components/move-tree.module.css). Stable curved black limbs connect compact answer notes. Confirmed answers reveal small branchlets. Current, answered and undecided states have written labels.
+The branch timeline is defined in [move-tree.tsx](../src/components/move-tree.tsx) and its [scoped stylesheet](../src/components/move-tree.module.css). A bold horizontal black stem connects five major stages. The stages alternate above and below the stem, with compact editable child branches and an active question attached to its stage. Phones use a vertical outline and a compact question in normal flow. Current, answered and undecided states have written labels.
 
 | Tree role | Hex |
 | --- | --- |
-| Trunk, branches, labels and focus | `#191919` |
+| Timeline stem, branches, labels and focus | `#191919` |
 | Summary text | `#706D69` |
 | Supporting text and counts | `#797672` |
-| Undecided status | `#8A8580` |
-| Answered status | `#66615B` |
+| Supporting status labels | `#797672` |
 | Current note surface | `#FFFEFA` |
 | Note hover fill / border | `#EFEEEB` / `#D8D5D0` |
 | Mobile outline borders | `#DFDCD7` |
@@ -59,7 +58,7 @@ The chart in [marhaba-app.tsx](../src/components/marhaba-app.tsx) uses black `#1
 
 ## Complete unique hex inventory
 
-There are **51 unique normalized hex literals** across local `.css` and `.tsx` UI files, including the new component stylesheets, plus map category data. The inventory below lists every source literal by file. Shorthand is expanded and letters are uppercase. Eight-digit values use `#RRGGBBAA`, with the last two digits representing alpha.
+There are **49 unique normalized hex literals** across local `.css` and `.tsx` UI files, including component stylesheets, plus map category data. The inventory below lists every source literal by file. Shorthand is expanded and letters are uppercase. Eight-digit values use `#RRGGBBAA`, with the last two digits representing alpha.
 
 ### src/app/globals.css (31 colours)
 
@@ -82,13 +81,13 @@ There are **51 unique normalized hex literals** across local `.css` and `.tsx` U
 #171717  #74716B  #A7A39B  #DDDAD4  #ECE9E3
 ```
 
-### src/components/move-tree.module.css (10 colours)
+### src/components/move-tree.module.css (9 colours)
 
 [Open source](../src/components/move-tree.module.css)
 
 ```text
-#191919  #66615B  #706D69  #797672  #8A8580  #D8D5D0
-#DFDCD7  #EFEEEB  #FAF9F6  #FFFEFA
+#191919  #706D69  #797672  #D8D5D0  #DFDCD7  #EFEEEB
+#F7F6F2  #FDFCF9  #FFFEFA
 ```
 
 ### src/components/nori-blob.module.css (1 colours)
@@ -115,6 +114,14 @@ There are **51 unique normalized hex literals** across local `.css` and `.tsx` U
 #56656B  #D9E4E6  #EDF3F4
 ```
 
+### src/components/start-cursor.module.css (1 colours)
+
+[Open source](../src/components/start-cursor.module.css)
+
+```text
+#171717
+```
+
 ### src/lib/map-data.ts (7 colours)
 
 [Open source](../src/lib/map-data.ts)
@@ -129,6 +136,6 @@ There are **51 unique normalized hex literals** across local `.css` and `.tsx` U
 - Named `white` resolves to `#FFFFFF`; named `black` resolves to `#000000`. These are additional to the literal inventory when they do not appear as hex.
 - `transparent` leaves a fill transparent. SVG `none` removes a fill or stroke.
 - `currentColor`, `inherit` and `var(...)` take their colours from surrounding styles or the tokens above.
-- Element opacity and alpha values control the blend with the background.
+- Element opacity and alpha values control the blend with the background. The question's scoped stylesheet also uses `rgb(23 23 23 / 4%)` for a black shadow at 4% opacity.
 
 The inventory covers local UI source. Geographic tile imagery and imported Leaflet/Tailwind defaults are supplied separately.

@@ -1,11 +1,40 @@
 import { describe, expect, it } from "vitest";
-import { homes, schools, workplaces } from "./data";
+import { activities, homes, schools, workplaces } from "./data";
 import { calculateFinance, financeFixture, monthDate } from "./finance";
 import { sampleProfile } from "./profile";
 
 const options = { home: homes[0], school: schools[0], workplace: workplaces[0], transport: "rental" as const };
 
 describe("dated finance", () => {
+  it("scales sibling school fees, bus seats, activity places and dated payments exactly", () => {
+    const p = sampleProfile();
+    p.household.children = 3;
+    p.household.childAges = [6, 9, 12];
+    const activity = activities[0];
+    const result = calculateFinance(p, { ...options, activity, transport: "bus-taxi" });
+    expect(result.costs.find(cost => cost.label.startsWith("School"))?.monthly).toBe(Math.round(options.school.annualFee * 3 / 12));
+    expect(result.events.filter(event => event.id.startsWith("school-")).reduce((total, event) => total - event.amount, 0)).toBe(options.school.annualFee * 3);
+    expect(result.events.filter(event => event.id.startsWith("activity-")).reduce((total, event) => total - event.amount, 0)).toBe(activity.monthlyCost * 3 * 12);
+    expect(result.costs.find(cost => cost.label.startsWith("Transport"))?.monthly).toBe(90_000 + 25_000 * 3 + 10_000 * 3);
+    expect(result.costs.find(cost => cost.label.startsWith("Living"))?.monthly).toBe(500_000 + 60_000 * 2);
+    const arrivalEvents = result.events.filter(event => event.date === p.money.moveDate && event.account === "household");
+    expect(arrivalEvents.reduce((total, event) => total - event.amount, 0)).toBe(result.arrivalCash);
+  });
+
+  it("does not apply school or activity fees to infants while preserving sibling fees", () => {
+    const p = sampleProfile();
+    p.household.children = 2;
+    p.household.childAges = [2, 8];
+    const result = calculateFinance(p, { ...options, activity: activities[0] });
+    expect(result.events.filter(event => event.id.startsWith("school-")).reduce((total, event) => total - event.amount, 0)).toBe(options.school.annualFee);
+    expect(result.events.find(event => event.id === "activity-0")?.amount).toBe(-activities[0].monthlyCost);
+    expect(result.partial).toBe(true);
+    p.household.composition = "solo";
+    const dormant = calculateFinance(p, { ...options, activity: activities[0] });
+    expect(dormant.events.some(event => /^(school|activity)-/.test(event.id))).toBe(false);
+    expect(p.household.childAges).toEqual([2, 8]);
+  });
+
   it("matches the supplied fixture without adding monthly equivalents to cash payments", () => {
     expect(financeFixture()).toEqual({ initialPayment: 33_600, cashRemaining: 66_400, monthlyExpenses: 13_000 });
     const result = calculateFinance(sampleProfile(), options);

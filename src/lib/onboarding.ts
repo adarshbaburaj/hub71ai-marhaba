@@ -1,5 +1,5 @@
 import { areas, workplaces } from "@/lib/data";
-import { hasChild, hasPartner } from "@/lib/profile";
+import { activeChildAges, hasChild, hasPartner } from "@/lib/profile";
 import type { MoveProfile, NodeId } from "@/lib/types";
 import { aed } from "@/lib/utils";
 
@@ -50,9 +50,9 @@ export function deriveNodes(profile: MoveProfile, visited: NodeId[]): MoveNode[]
     business: profile.intent === "move" ? `${profile.business.sector || "Existing business"} · ${profile.business.teamSize} ${profile.business.teamSize === 1 ? "person" : "people"}` : profile.intent === "start" ? `${profile.business.sector || "A new business"} · starting here` : profile.intent === "explore" ? "Exploring the possibilities" : "Where would you like to begin?",
     workspace: `${workspaceSummary}${locationName(profile.business.workplaceId) ? ` · ${locationName(profile.business.workplaceId)}` : ""}`,
     "business-money": profile.business.cash === null ? "Optional cash assumptions" : `${aed(profile.business.cash)} available cash`,
-    household: profile.household.composition === "solo" ? "Moving on your own" : profile.household.composition === "partner" ? "Two adults" : profile.household.composition === "family" ? "Two adults and one child" : "Your household, your way",
+    household: profile.household.composition === "solo" ? "Moving on your own" : profile.household.composition === "partner" ? "Two adults" : ["family", "single-parent"].includes(profile.household.composition ?? "") ? `${hasPartner(profile) ? "Two adults" : "One adult"} and ${profile.household.children} ${profile.household.children === 1 ? "child" : "children"}` : "Your household, your way",
     partner: profile.household.partner.work === "remote" ? "Working remotely" : profile.household.partner.work === "seeking" ? "Looking for work" : profile.household.partner.work === "undecided" ? "Work situation undecided" : `${profile.household.partner.days} workplace days${locationName(profile.household.partner.workplaceId) ? ` · ${locationName(profile.household.partner.workplaceId)}` : " · location undecided"}`,
-    child: `${profile.household.child.curriculum || "Curriculum undecided"}${profile.household.child.age === null ? "" : ` · age ${profile.household.child.age}`}${profile.household.child.swimming ? " · swimming" : ""}`,
+    child: `${profile.household.children > 1 ? `${profile.household.children} children · ` : ""}${profile.household.child.curriculum || "Curriculum open"}${hasChild(profile) ? ` · ages ${activeChildAges(profile).map(age => age ?? "?").join(", ")}` : ""}${profile.household.child.swimming ? " · swimming" : ""}`,
     lifestyle: profile.lifestyle.hobbies.length ? `${profile.lifestyle.hobbies.slice(0, 2).join(" · ")}${profile.lifestyle.hobbies.length > 2 ? ` +${profile.lifestyle.hobbies.length - 2}` : ""}` : profile.lifestyle.routine.trim() ? "Your daily routine" : "Room for the things you enjoy",
     home: `${profile.home.bedrooms} bedrooms${profile.home.annualRentLimit === null ? " · rent undecided" : ` · up to ${aed(profile.home.annualRentLimit)}/year`}${profile.home.areas.length === 1 ? ` · ${areas.find((area) => area.id === profile.home.areas[0])?.name || profile.home.areas[0]}` : ""}`,
     transport: profile.transport.car === "none" ? "No car · supported journeys" : profile.transport.car === "rental" ? "One rental car" : "Car access undecided",
@@ -65,7 +65,7 @@ export function deriveNodes(profile: MoveProfile, visited: NodeId[]): MoveNode[]
     "business-money": [profile.business.cash, profile.business.monthlyReceipts, profile.business.monthlySpending].some((value) => value !== null),
     household: profile.household.composition !== null,
     partner: profile.household.partner.work !== "undecided",
-    child: profile.household.child.curriculum !== null || profile.household.child.age !== null,
+    child: profile.household.children > 0 || profile.household.child.curriculum !== null || profile.household.child.age !== null,
     lifestyle: profile.lifestyle.hobbies.length > 0 || profile.lifestyle.routine.trim().length > 0,
     home: seen.has("home"),
     transport: profile.transport.car !== "undecided",

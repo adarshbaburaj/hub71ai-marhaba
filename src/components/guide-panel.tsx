@@ -159,7 +159,7 @@ export function GuidePanel({ profile, revision, selectedPlanId, onApply, open, o
             <div className="guide-message guide-message-intro">
               <p>I can explain the tradeoffs in your current plan and help update your answers.</p>
               <p className="muted">Try “What needs confirming?” or “Change my monthly budget to AED 18,000.” I use your latest answers for each request.</p>
-              <span className="guide-status" aria-live="polite"><span className={`status-dot ${availability === "live" ? "status-dot-live" : ""}`} />{availability === "live" ? "Luna connected · demo planning data" : availability === "unavailable" ? "Guide unavailable · answer cards still work" : "Luna · connects when you send a message"}</span>
+              <span className="guide-status" aria-live="polite"><span className={`status-dot ${availability === "live" ? "status-dot-live" : ""}`} />{availability === "live" ? "Luna connected · planning estimates" : availability === "unavailable" ? "Guide unavailable · answer cards still work" : "Luna · connects when you send a message"}</span>
             </div>
             <div role="log" aria-label="Guide conversation" aria-live="polite" aria-relevant="additions">
               {messages.map((entry) => <div key={entry.id} className={`guide-message guide-message-${entry.role}`}><span className="guide-speaker">{entry.role === "user" ? "You" : "Nori"}</span><p style={{ whiteSpace: "pre-wrap" }}>{entry.text}</p></div>)}

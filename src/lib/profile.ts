@@ -39,7 +39,18 @@ export function sampleProfile(): MoveProfile {
 }
 
 export const hasPartner = (p: MoveProfile): boolean => p.household.composition === "partner" || p.household.composition === "family";
-export const hasChild = (p: MoveProfile): boolean => p.household.composition === "family" && p.household.children > 0;
+export const hasChild = (p: MoveProfile): boolean => ["family", "single-parent"].includes(p.household.composition ?? "") && p.household.children > 0;
+
+/** Saved single-child profiles remain valid; never copy one age to every sibling. */
+export function activeChildAges(p: MoveProfile): (number | null)[] {
+  if (!hasChild(p)) return [];
+  return Array.from({ length: p.household.children }, (_, index) =>
+    p.household.childAges?.[index] !== undefined ? p.household.childAges[index] : index === 0 ? p.household.child.age : null,
+  );
+}
+
+/** Unknown ages retain a provisional school allowance; other stages need a quote. */
+export const schoolChildCount = (p: MoveProfile): number => activeChildAges(p).filter(age => age === null || (age >= 5 && age <= 18)).length;
 
 /** Derive an active profile without destroying answers needed when branches reopen. */
 export function effectiveProfile(p: MoveProfile): MoveProfile {
@@ -49,6 +60,7 @@ export function effectiveProfile(p: MoveProfile): MoveProfile {
   if (!hasPartner(active)) active.household.partner = { work: "undecided", workplaceId: null, days: 0 };
   if (!hasChild(active)) {
     active.household.children = 0;
+    active.household.childAges = [];
     active.household.child = { age: null, curriculum: null, swimming: false, schoolBusEssential: false };
   }
   if (!["office", "hybrid"].includes(active.household.partner.work)) {

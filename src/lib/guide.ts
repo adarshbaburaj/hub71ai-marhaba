@@ -30,13 +30,14 @@ export const profileSchema: z.ZodType<MoveProfile> = z.object({
     founderPay: amount,
   }).strict(),
   household: z.object({
-    composition: z.enum(["solo", "partner", "family"]).nullable(),
+    composition: z.enum(["solo", "partner", "family", "single-parent"]).nullable(),
     partner: z.object({
       work: z.enum(["office", "remote", "hybrid", "seeking", "undecided"]),
       workplaceId,
       days: z.number().int().min(0).max(7),
     }).strict(),
     children: z.number().int().min(0).max(20),
+    childAges: z.array(z.number().int().min(0).max(21).nullable()).max(20).optional(),
     child: z.object({
       age: z.number().int().min(0).max(21).nullable(),
       curriculum: z.enum(["British", "American", "IB", "Any"]).nullable(),
@@ -81,7 +82,7 @@ export const SUPPORTED_EDIT_PATHS = [
   "business.includeFinances", "business.cash", "business.monthlyReceipts",
   "business.monthlySpending", "business.founderPay", "household.composition",
   "household.partner.work", "household.partner.workplaceId", "household.partner.days",
-  "household.children", "household.child.age", "household.child.curriculum",
+  "household.children", "household.childAges", "household.child.age", "household.child.curriculum",
   "household.child.swimming", "household.child.schoolBusEssential", "home.bedrooms",
   "lifestyle.hobbies", "lifestyle.routine",
   "home.furnishing", "home.areas", "home.annualRentLimit", "transport.car",
@@ -90,7 +91,7 @@ export const SUPPORTED_EDIT_PATHS = [
 ] as const;
 
 const allowedPaths = new Set<string>(SUPPORTED_EDIT_PATHS);
-const editValue = z.union([z.string().max(2000), z.number().finite(), z.boolean(), z.null(), z.array(z.string().max(100)).max(20)]);
+const editValue = z.union([z.string().max(2000), z.number().finite(), z.boolean(), z.null(), z.array(z.string().max(100)).max(20), z.array(z.number().int().min(0).max(21).nullable()).max(20)]);
 export const profileEditSchema = z.object({ path: z.enum(SUPPORTED_EDIT_PATHS), value: editValue }).strict();
 export const guideProposalSchema = z.object({
   explanation: z.string().min(1).max(6000),
@@ -120,6 +121,13 @@ export function applyProfileEdits(profile: MoveProfile, edits: ProfileEdit[]): M
     for (const key of keys.slice(0, -1)) target = target[key] as Record<string, unknown>;
     target[keys[keys.length - 1]] = structuredClone(edit.value);
   }
+  // Keep the legacy first-child field and per-child answers in agreement.
+  if (seen.has("household.childAges") && Array.isArray(next.household.childAges)) {
+    const ages = next.household.childAges;
+    next.household.childAges = [...ages, ...(profile.household.childAges ?? []).slice(ages.length)];
+    next.household.child.age = ages[0] ?? null;
+  }
+  else if (seen.has("household.child.age") && next.household.childAges?.length) next.household.childAges[0] = next.household.child.age;
   return profileSchema.parse(next);
 }
 
@@ -142,7 +150,7 @@ export const GUIDE_EDIT_LABELS: Record<(typeof SUPPORTED_EDIT_PATHS)[number], st
   "business.workplaceId": "Business workplace", "business.includeFinances": "Business finances", "business.cash": "Business cash",
   "business.monthlyReceipts": "Monthly business receipts", "business.monthlySpending": "Monthly business spending", "business.founderPay": "Monthly founder pay",
   "household.composition": "Household", "household.partner.work": "Partner's work", "household.partner.workplaceId": "Partner's workplace",
-  "household.partner.days": "Partner's office days each week", "household.children": "Children", "household.child.age": "Child's age",
+  "household.partner.days": "Partner's office days each week", "household.children": "Children", "household.childAges": "Children's ages", "household.child.age": "Child's age",
   "household.child.curriculum": "School curriculum", "household.child.swimming": "Swimming", "household.child.schoolBusEssential": "School bus is essential",
   "lifestyle.hobbies": "Hobbies and interests", "lifestyle.routine": "Your daily routine",
   "home.bedrooms": "Bedrooms", "home.furnishing": "Furnishing", "home.areas": "Preferred areas", "home.annualRentLimit": "Annual rent limit",
@@ -156,7 +164,7 @@ const moneyPaths = new Set([
   "home.annualRentLimit", "money.monthlyBudget", "money.cash", "money.monthlyIncome", "money.reserve",
 ]);
 const valueLabels: Record<string, string> = {
-  move: "Move to Abu Dhabi", start: "Start a business", explore: "Explore my options", solo: "Just me", partner: "Me and my partner",
+  move: "Move to Abu Dhabi", start: "Start a business", explore: "Explore my options", solo: "Just me", partner: "Me and my partner", "single-parent": "Me and my children",
   desk: "Shared desk", private: "Private office", specialist: "Specialist space", remote: "Remote", undecided: "Not decided yet",
   office: "Office", hybrid: "Hybrid", seeking: "Looking for work", any: "Any furnishing", furnished: "Furnished", unfurnished: "Unfurnished",
   rental: "Rental car", none: "No car", cash: "Cash confidence", travel: "Less travel", family: "Family fit",
@@ -168,10 +176,11 @@ export function readProfileValue(profile: MoveProfile, path: string): unknown {
 }
 
 function formatEditValue(path: string, value: unknown): string {
-  if (value === null) return "Not answered yet";
+  if (value === null || value === undefined) return "Not answered yet";
   if (typeof value === "boolean") return value ? "Yes" : "No";
   if (Array.isArray(value)) {
     if (!value.length) return path === "home.areas" ? "Any area" : "No preference";
+    if (path === "household.childAges") return value.map((age, index) => `Child ${index + 1}: ${age === null ? "age not set" : `${age} years`}`).join(", ");
     return value.map((entry) => path === "home.areas" ? areas.find((area) => area.id === entry)?.name ?? entry : valueLabels[entry] ?? entry).join(", ");
   }
   if (typeof value === "number" && moneyPaths.has(path)) return aed(value);
@@ -202,4 +211,12 @@ export function describeProfileEdit(profile: MoveProfile, edit: ProfileEdit): { 
     after: formatEditValue(edit.path, edit.value),
     consequence: consequences[group],
   };
+}
+
+export function editLabel(path: string): string {
+  return GUIDE_EDIT_LABELS[path as keyof typeof GUIDE_EDIT_LABELS] ?? path;
+}
+
+export function describeValue(profile: MoveProfile, path: string, value: ProfileEdit["value"]): string {
+  return formatEditValue(path, value);
 }

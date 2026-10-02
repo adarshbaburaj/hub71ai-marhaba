@@ -2,26 +2,28 @@
 .small{width:64px}
 .medium{width:104px}
 .large{width:148px}
-.stage{display:block;width:100%;transform-origin:50% 85%;animation:nori-arrive 540ms cubic-bezier(.2,.85,.2,1) both}
+.stage{display:block;width:100%;transform-origin:50% 93%;animation:nori-arrive 720ms cubic-bezier(.2,.85,.2,1) both}
 .art{display:block;width:100%;height:auto;overflow:visible}
-.creature{transform-origin:80px 115px;animation:nori-float 3.8s ease-in-out infinite}
-.eyes{transform-origin:80px 70px;animation:nori-blink 6.6s ease-in-out infinite}
+.creature{transform-origin:94px 181px;animation:nori-bounce 4.8s ease-in-out infinite}
+.eyes{transform-origin:91px 96px;animation:nori-blink 6.6s ease-in-out infinite}
 .pupils{animation:nori-look 9s ease-in-out infinite}
-.shadow{transform-origin:81px 135px;animation:nori-shadow 3.8s ease-in-out infinite}
+.wave{transform-origin:63px 125px;animation:nori-wave 4.8s ease-in-out infinite}
+.shadow{transform-origin:96px 184px;animation:nori-shadow 4.8s ease-in-out infinite}
 .interactive{padding:0;border:0;background:transparent;cursor:pointer;border-radius:28%;transition:filter 180ms}
-.interactive:focus-visible{outline:3px solid #191919;outline-offset:3px}
-.interactive:hover .creature{animation:nori-wiggle 750ms ease-in-out infinite}
+.interactive:focus-visible{outline:3px solid #4F6044;outline-offset:3px}
+.interactive:hover .wave{animation:nori-wave 900ms ease-in-out infinite}
 .hopping{animation:nori-hop 660ms cubic-bezier(.2,.75,.3,1) both}
 .thinking .pupils{animation:nori-think 1.8s ease-in-out infinite}
-.thinking .creature{animation:nori-float 2s ease-in-out infinite}
+.thinking .creature{animation:nori-thought 2s ease-in-out infinite}
 .celebrate .stage{animation:nori-hop 660ms cubic-bezier(.2,.75,.3,1) both}
-.celebrate .smile{stroke-width:4}
-@keyframes nori-float{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-4px) rotate(2deg)}}
-@keyframes nori-shadow{0%,100%{transform:scaleX(1);opacity:1}50%{transform:scaleX(.83);opacity:.65}}
+.celebrate .smile{stroke-width:3}
+@keyframes nori-bounce{0%,8%,32%,100%{transform:translateY(0) rotate(-1deg)}12%{transform:scale(1.04,.95)}19%{transform:translateY(-10px) rotate(3deg) scale(.98,1.02)}27%{transform:translateY(1px) scale(1.04,.96)}65%{transform:translateY(-2px) rotate(1deg)}}
+@keyframes nori-shadow{0%,8%,32%,100%{transform:scaleX(1);opacity:1}19%{transform:scaleX(.72);opacity:.45}65%{transform:scaleX(.94);opacity:.8}}
 @keyframes nori-blink{0%,42%,46%,100%{transform:scaleY(1)}44%{transform:scaleY(.08)}}
-@keyframes nori-look{0%,20%,65%,100%{transform:translateX(0)}30%,52%{transform:translateX(3px)}80%,90%{transform:translateX(-2px)}}
-@keyframes nori-think{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
-@keyframes nori-arrive{0%{transform:translateY(7px) scale(.9,1.08);opacity:0}40%{transform:translateY(-8px) scale(1.03,.97);opacity:1}68%{transform:translateY(2px) scale(1.06,.94)}100%{transform:none;opacity:1}}
+@keyframes nori-look{0%,20%,65%,100%{transform:translateX(0)}30%,52%{transform:translateX(2px)}80%,90%{transform:translateX(-1px)}}
+@keyframes nori-wave{0%,8%,36%,100%{transform:rotate(0)}18%,28%{transform:rotate(11deg)}23%,33%{transform:rotate(-6deg)}}
+@keyframes nori-think{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@keyframes nori-thought{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(2deg)}}
+@keyframes nori-arrive{0%{transform:translateY(7px) scale(.9,1.08);opacity:0}40%{transform:translateY(-10px) scale(1.03,.97);opacity:1}68%{transform:translateY(2px) scale(1.06,.94)}100%{transform:none;opacity:1}}
 @keyframes nori-hop{0%{transform:scale(1.12,.87)}23%{transform:translateY(-22px) rotate(-7deg) scale(.93,1.08)}53%{transform:translateY(-13px) rotate(6deg)}73%{transform:translateY(2px) scale(1.14,.85)}100%{transform:none}}
-@keyframes nori-wiggle{0%,100%{transform:translateY(-3px) rotate(-5deg)}50%{transform:translateY(-7px) rotate(5deg)}}
-@media(prefers-reduced-motion:reduce){.stage,.hopping,.creature,.eyes,.pupils,.shadow,.thinking .pupils,.thinking .creature,.celebrate .stage,.interactive:hover .creature{animation:none}.interactive{transition:none}}
+@media(prefers-reduced-motion:reduce){.stage,.hopping,.creature,.eyes,.pupils,.wave,.shadow,.thinking .pupils,.thinking .creature,.celebrate .stage,.interactive:hover .wave{animation:none}.interactive{transition:none}}

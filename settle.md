@@ -1,16 +1,17 @@
 # Marhaba product and implementation reference
 
-Marhaba, originally described as Settled, helps international founders answer: **Can Abu Dhabi work for our business, household and money?** The first supported scenario is a founder relocating with a working partner and one school-age child. Solo and childless branches remain available.
+Marhaba, originally described as Settled, helps international founders answer: **Can Abu Dhabi work for our business, household and money?** The sample is a founder relocating with a working partner and one school-age child. The current planner also supports solo founders, childless households, single parents and up to 20 children with individual ages.
 
 ## Experience
 
-1. Begin with an empty warm white page and choose **Scale an existing business** or **Start a new business**. A separate sample restores a fictional founder family.
-2. Answer one bold question at a time in a clean document layout. Black organic branches and small branchlets grow as answers are confirmed. Edit any revealed branch and resume its precise saved question after reload. Leave uncertain details undecided; hobbies and routines stay separate from financial eligibility.
-3. Compare complete plans for preserving cash, reducing travel and balancing family priorities. Inspect locations and visible requirement checks.
+1. Begin with an empty warm white page and choose **Scale my business** or **Start a new business**. Pressing the start action plays a quiet two-note chirp. A small cursor-following animation appears on this page only for mouse users without reduced motion. A separate sample restores a fictional founder family.
+2. Answer six quick prompts for a solo move or eight with children. Child count and individual ages share one card with Add/Remove controls; bedrooms share the neighbourhood card. A vertical black branching timeline sits on the left and a compact question on the right. Confirm answers to update plans, revisit details through branches, and resume the precise saved question after reload. Long card content scrolls while actions remain available; phones use normal page flow.
+3. Compare complete plans for preserving cash, reducing travel and balancing family priorities. Compact local and results sketches connect places with animated red lines and prepared travel estimates; work, school, food and hobby layers can be toggled without changing plan facts. Inspect the same plan's costs and requirement checks.
 4. Change a meaningful choice, such as removing the car, and see plans, journeys and money recalculate.
-5. Choose a plan; prepare phased tasks and human enquiries; print or copy the result with its assumptions.
+5. Choose a plan; inspect monthly spending and payment timing, prepare phased tasks and human enquiries, and print or copy the result with its assumptions.
+6. Open **Nori at work** for an iMessage-style two-bedroom enquiry between Nori and Amaya, an estate-agent demo persona. Blue/gray bubbles and recorded voice messages make it feel like a conversation; a small demo label preserves its simulated status. Text loops every 22 seconds; Pause and Replay control the case. Click the provided Nori WAV or estate-agent MP3 to listen; playback pauses the conversation. It sends no messages and leaves the plan unchanged. Recordings are local assets; ElevenLabs is not connected live.
 
-Nori is Marhaba's guide: a small cute monochrome liquid character with eyes, gentle blinks and a short springy bounce after a confirmed answer. Warm white, black text, strong Inter typography and neutral surfaces define the current visual direction. Desktop places the question beside the tree; phones show the question first and keep all revealed branches reachable in a compact outline. Reduced motion removes decorative movement.
+Nori is Marhaba's guide: a sage-and-cream SVG gazelle with big eyes, gentle blinks, a waving hoof and a springy hop at each question. A short local thinking transition connects prompts; clicking Nori opens Luna chat. Warm white, black text, strong Inter typography and neutral surfaces define the current visual direction. Reduced motion removes decorative movement and prompt delays.
 
 Structured questions work without live AI. Optional `gpt-6-luna` chat runs through a server-only `OPENAI_API_KEY`, explains deterministic results and offers reviewable answer changes. The user must apply each proposal; outdated proposals cannot overwrite newer answers. Local setup and verification commands are in [README.md](README.md).
 
@@ -18,7 +19,7 @@ Structured questions work without live AI. Optional `gpt-6-luna` chat runs throu
 
 - Apply essential requirements first. Met, not met and unknown remain distinct; unknown essential details produce a conditional plan. A no-match state reports conflicts rather than silently changing constraints.
 - Keep home, founder workplace, partner workplace, school, activities and transport in one combination. A school drop-off is a chained journey. School-bus coverage is checked independently from nearby public buses.
-- Use four supported Abu Dhabi areas, eight demo homes, six fictional schools, three workplace anchors and sample service profiles. Catalogue prices, admission assumptions and journeys are demonstration data.
+- Use four supported Abu Dhabi areas, eleven demo homes, six fictional schools, three workplace anchors and sample service profiles. Catalogue prices, admission assumptions and journeys are demonstration data.
 - Hub71 is the primary documented ecosystem anchor at Al Khatem Tower, ADGM Square, Al Maryah Island. Its approximate map pin refers to the [official address](https://www.hub71.com/contact). Synthetic workspace allowances are not Hub71 prices; programme admission, benefits and actual workspace availability need confirmation.
 - Leaflet/OpenStreetMap provides geographic context. Nearby hospitals, supermarkets, public stops and hobby venues are explicitly demo pins. Straight-line proximity does not establish routes, access, opening hours, fees or insurance coverage. The list remains available without street tiles.
 - Prepare human handoffs without pretending to send messages. Housing contacts use clearly masked UAE-format numbers. Business, school, housing and document-preparation profiles are fictional.
@@ -29,13 +30,15 @@ Store money as integer fils and display AED. Separate household and business acc
 
 Use the selected arrival date for the payment schedule. When arrival is undecided, use the editable planning reference and label the dates illustrative. Build 12 months of events and assess cash at payment dates; unknown opening cash or receipts leave balances unavailable. Unquoted business setup or specialist costs remain excluded and visible as partial totals. The supplied arithmetic fixture remains AED 33,600 initial payments, AED 66,400 remaining cash and AED 13,000 average monthly expenses.
 
+The spending graph is available before cash or income is supplied. Monthly spending shows cost equivalents; payment timing shows dated expenses and deposits once each. Selecting a period reveals its amounts. This graph shows spending, while a balance forecast still requires known cash and receipts. The budget prompt offers synthetic plan examples as an optional draft starting point.
+
 Banking stays outside relocation calculations. It records existing bank names, personal/business account interest, optional current bureau score, feature preferences and optional residency. Demo bundles organise questions about fees, savings, cashback, transfers, company accounts and funding. No score bands, credit limits, offers or approval decisions are inferred; hobbies never affect banking results. Users control whether their names of banks and supplied score appear in copied questions. [Etihad Credit Bureau](https://etihadbureau.ae/Individual/CreditScore) currently states a 300–850 score range; [CBUAE responsible financing standards](https://rulebook.centralbank.ae/en/rulebook/article-7-responsible-financing-practice-1) provide the official assessment reference.
 
 ## Current limits and next work
 
 The core must remain usable with every external connection disconnected. Connections are honest previews, not successful authentication or live sync. Relocation and banking persist independently on the device and have explicit reset controls; no accounts, shared household workspace or server database are implemented.
 
-The prototype supports one calculated child and prepared routes, without current property inventory, school admissions, insurance quotes, bank applications or provider outreach. Document help currently prepares checklists only. Uploads, storage and sharing of passports or company files are future work requiring secure authentication, access controls and deletion behaviour. Production routing, source refresh, consented connectors and reviewed eligibility logic are later integrations.
+Children have individual retained ages, with one shared curriculum and school as an explicit planning approximation. School-age children contribute per-child fees; nursery and further education need separate quotes. Routes remain prepared estimates. There is no current property inventory, confirmed school admission, insurance quote, bank application or provider outreach; the agent conversations are scripted demonstrations. Document help currently prepares checklists only. Uploads, storage and sharing of passports or company files are future work requiring secure authentication, access controls and deletion behaviour. Production routing, source refresh, consented connectors and reviewed eligibility logic are later integrations.
 
 ---
 

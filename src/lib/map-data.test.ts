@@ -18,7 +18,7 @@ describe("map geography and proximity", () => {
 
   it("labels the documented Hub71 address with an explicitly approximate pin", () => {
     expect(locations["harbor-lab"]).toMatchObject({ ...HUB71_COORDINATES, name: "Hub71", sourceUrl: HUB71_SOURCE, source: "Documented address · approximate pin" });
-    expect(locations["harbor-lab"].description).toContain("demo assumptions");
+    expect(locations["harbor-lab"].description).toContain("planning assumptions");
     expect(nearbyPoints.every((point) => point.source === "Demo location" && point.name.startsWith("Demo "))).toBe(true);
   });
 

@@ -36,11 +36,14 @@ export const MAP_CATEGORIES: { id: MapCategory; label: string; color: string; sy
 const coordinates: Record<string, Coordinates> = {
   "reed-apartment": { lat: 24.4933, lng: 54.4097 },
   "reed-family": { lat: 24.4942, lng: 54.4120 },
+  "reed-villa": { lat: 24.4951, lng: 54.4135 },
   "garden-flat": { lat: 24.4149, lng: 54.5638 },
   "garden-house": { lat: 24.4183, lng: 54.5681 },
+  "garden-compound": { lat: 24.4168, lng: 54.5705 },
   "tide-apartment": { lat: 24.4491, lng: 54.6050 },
   "tide-family": { lat: 24.4509, lng: 54.6033 },
   "quay-flat": { lat: 24.5020, lng: 54.3906 },
+  "quay-studio": { lat: 24.5012, lng: 54.3892 },
   "quay-family": { lat: 24.5003, lng: 54.3914 },
   "reed-school": { lat: 24.4992, lng: 54.4110 },
   "garden-school": { lat: 24.4201, lng: 54.5652 },
@@ -58,9 +61,9 @@ const coordinates: Record<string, Coordinates> = {
 
 /** Static demo pins never establish property availability or actual venue locations. */
 export const locations: Record<string, MapPoint> = Object.fromEntries([
-  ...homes.map((home): MapPoint => ({ ...coordinates[home.id], id: home.id, name: home.name, areaId: home.areaId, category: "home", description: "Illustrative home pin. Rent, furnishing and availability are demo assumptions.", source: "Demo location", inspectKind: "home", inspectId: home.id })),
+  ...homes.map((home): MapPoint => ({ ...coordinates[home.id], id: home.id, name: home.name, areaId: home.areaId, category: "home", description: "Illustrative home pin. Rent, furnishing and availability are planning assumptions.", source: "Demo location", inspectKind: "home", inspectId: home.id })),
   ...schools.map((school): MapPoint => ({ ...coordinates[school.id], id: school.id, name: school.name, areaId: school.areaId, category: "school", description: "Illustrative school pin. Confirm admission, stage, fees and exact school-bus coverage separately.", source: "Demo location", inspectKind: "school", inspectId: school.id })),
-  ...workplaces.map((place): MapPoint => ({ ...coordinates[place.id], id: place.id, name: place.id === "harbor-lab" ? "Hub71" : place.name, areaId: place.areaId, category: "office", description: place.id === "harbor-lab" ? "Al Khatem Tower, ADGM Square, Al Maryah Island. Address documented by Hub71; map pin approximate. Planner fees and workspace suitability remain demo assumptions." : "Illustrative workplace pin. Confirm actual workspace suitability and terms.", source: place.id === "harbor-lab" ? "Documented address · approximate pin" : "Demo location", sourceUrl: place.id === "harbor-lab" ? HUB71_SOURCE : undefined, inspectKind: "workplace", inspectId: place.id })),
+  ...workplaces.map((place): MapPoint => ({ ...coordinates[place.id], id: place.id, name: place.id === "harbor-lab" ? "Hub71" : place.name, areaId: place.areaId, category: "office", description: place.id === "harbor-lab" ? "Al Khatem Tower, ADGM Square, Al Maryah Island. Address documented by Hub71; map pin approximate. Planner fees and workspace suitability remain planning assumptions." : "Illustrative workplace pin. Confirm actual workspace suitability and terms.", source: place.id === "harbor-lab" ? "Documented address · approximate pin" : "Demo location", sourceUrl: place.id === "harbor-lab" ? HUB71_SOURCE : undefined, inspectKind: "workplace", inspectId: place.id })),
   ...activities.map((activity): MapPoint => ({ ...coordinates[activity.id], id: activity.id, name: activity.name, areaId: activity.areaId, category: "leisure", description: "Illustrative swimming venue. Confirm lessons, schedules and fees.", source: "Demo location", inspectKind: "activity", inspectId: activity.id, hobbies: ["Swimming"] })),
 ].map((point) => [point.id, point]));
 
@@ -73,15 +76,15 @@ const areaCenters = [
 
 /** Nearby services are explicitly fictional, including hospitals and bus stops. */
 export const nearbyPoints: MapPoint[] = areaCenters.flatMap((area) => [
-  { key: "hospital", title: "Hospital", category: "healthcare" as const, dx: 0.0031, dy: -0.0032, description: "Demo healthcare pin. This is not a real hospital or verified coverage; confirm an actual provider and insurance network." },
-  { key: "market", title: "Supermarket", category: "groceries" as const, dx: -0.0020, dy: 0.0025, description: "Demo grocery pin, used to illustrate nearby daily essentials. Verify actual stores and opening hours." },
-  { key: "bus", title: "Public Bus Stop", category: "transit" as const, dx: 0.0009, dy: 0.0008, description: "Demo public-bus pin. Check actual stops and services. This does not establish school-bus coverage." },
-  { key: "park", title: "Running & Cycling Park", category: "leisure" as const, dx: 0.0022, dy: 0.0045, description: "Demo outdoor recreation pin. Check actual routes, access and facilities.", hobbies: ["Running", "Cycling", "Walking", "Outdoors"] },
-  { key: "coffee", title: "Coffee & Reading Corner", category: "leisure" as const, dx: -0.0013, dy: -0.0019, description: "Demo café and reading pin. Availability, facilities and costs are unverified.", hobbies: ["Coffee", "Reading", "Food", "Cooking"] },
-  { key: "fitness", title: "Fitness & Yoga Studio", category: "leisure" as const, dx: -0.0034, dy: 0.0005, description: "Demo fitness venue. Confirm actual sessions, memberships and fees.", hobbies: ["Gym", "Fitness", "Yoga"] },
-  { key: "courts", title: "Tennis & Padel Courts", category: "leisure" as const, dx: 0.0039, dy: 0.0021, description: "Demo racquet-sport venue. Confirm actual courts, booking and fees.", hobbies: ["Tennis", "Padel"] },
-  { key: "pool", title: "Swimming Pool", category: "leisure" as const, dx: -0.0028, dy: -0.0033, description: "Demo swimming pin. Confirm lessons, safe access, schedules and fees.", hobbies: ["Swimming", "Beach"] },
-  { key: "arts", title: "Arts & Community Studio", category: "leisure" as const, dx: 0.0017, dy: -0.0040, description: "Demo community venue. Confirm actual classes, events and fees.", hobbies: ["Arts", "Art", "Music", "Photography"] },
+  { key: "hospital", title: "Hospital", category: "healthcare" as const, dx: 0.0031, dy: -0.0032, description: "Illustrative healthcare pin. This is not a real hospital or verified coverage; confirm an actual provider and insurance network." },
+  { key: "market", title: "Supermarket", category: "groceries" as const, dx: -0.0020, dy: 0.0025, description: "Illustrative grocery pin, used to illustrate nearby daily essentials. Verify actual stores and opening hours." },
+  { key: "bus", title: "Public Bus Stop", category: "transit" as const, dx: 0.0009, dy: 0.0008, description: "Illustrative public-bus pin. Check actual stops and services. This does not establish school-bus coverage." },
+  { key: "park", title: "Running & Cycling Park", category: "leisure" as const, dx: 0.0022, dy: 0.0045, description: "Illustrative outdoor recreation pin. Check actual routes, access and facilities.", hobbies: ["Running", "Cycling", "Walking", "Outdoors"] },
+  { key: "coffee", title: "Coffee & Reading Corner", category: "leisure" as const, dx: -0.0013, dy: -0.0019, description: "Illustrative café and reading pin. Availability, facilities and costs are unverified.", hobbies: ["Coffee", "Reading", "Food", "Cooking"] },
+  { key: "fitness", title: "Fitness & Yoga Studio", category: "leisure" as const, dx: -0.0034, dy: 0.0005, description: "Illustrative fitness venue. Confirm actual sessions, memberships and fees.", hobbies: ["Gym", "Fitness", "Yoga"] },
+  { key: "courts", title: "Tennis & Padel Courts", category: "leisure" as const, dx: 0.0039, dy: 0.0021, description: "Illustrative racquet-sport venue. Confirm actual courts, booking and fees.", hobbies: ["Tennis", "Padel"] },
+  { key: "pool", title: "Swimming Pool", category: "leisure" as const, dx: -0.0028, dy: -0.0033, description: "Illustrative swimming pin. Confirm lessons, safe access, schedules and fees.", hobbies: ["Swimming", "Beach"] },
+  { key: "arts", title: "Arts & Community Studio", category: "leisure" as const, dx: 0.0017, dy: -0.0040, description: "Illustrative community venue. Confirm actual classes, events and fees.", hobbies: ["Arts", "Art", "Music", "Photography"] },
 ].map((entry): MapPoint => ({ id: `demo-${area.id}-${entry.key}`, name: `Demo ${area.label} ${entry.title}`, category: entry.category, areaId: area.id, lat: area.lat + entry.dx, lng: area.lng + entry.dy, description: entry.description, source: "Demo location", hobbies: entry.hobbies })));
 
 /** Spherical great-circle distance, never a driving route or travel-time estimate. */

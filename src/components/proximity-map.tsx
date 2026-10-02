@@ -21,14 +21,14 @@ function popupContent(point: MapPoint, origin: MapPoint, onInspect?: ProximityMa
   const popup = document.createElement("div");
   popup.className = "geo-popup";
   const heading = document.createElement("strong");
-  heading.textContent = point.name;
+  heading.textContent = point.name.replace(/^Demo /, "");
   popup.append(heading);
   const role = document.createElement("p");
   role.textContent = point.role ?? categoryDetails.get(point.category)?.label ?? point.category;
   popup.append(role);
   const source = document.createElement("span");
   source.className = "geo-source";
-  source.textContent = point.source;
+  source.textContent = point.source === "Demo location" ? "Illustrative location" : point.source;
   popup.append(source);
   const detail = document.createElement("p");
   detail.textContent = point.description;
@@ -72,7 +72,7 @@ function PlainMap({ points, origin, onSelect }: { points: MapPoint[]; origin: Ma
       <rect width="700" height="380" fill="#edf3f4" />
       <path d="M0 95 H700 M0 190 H700 M0 285 H700 M175 0 V380 M350 0 V380 M525 0 V380" stroke="#d9e4e6" />
       {points.filter((point) => point.id !== origin.id).map((point) => { const end = position(point); return <line key={`line-${point.id}`} x1={start.x} y1={start.y} x2={end.x} y2={end.y} stroke={categoryDetails.get(point.category)?.color} strokeWidth="2" strokeDasharray="6 5" opacity="0.6" />; })}
-      {points.map((point) => { const positionValue = position(point); const category = categoryDetails.get(point.category)!; return <g key={point.id} transform={`translate(${positionValue.x}, ${positionValue.y})`} role="button" tabIndex={0} aria-label={`${point.name}, ${category.label}, ${point.source}`} onClick={() => onSelect(point)} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); onSelect(point); } }}><circle r={point.id === origin.id ? 16 : 12} fill={category.color} stroke="white" strokeWidth="3" /><text textAnchor="middle" dominantBaseline="central" fill="white" fontSize="10" fontWeight="700">{category.symbol}</text></g>; })}
+      {points.map((point) => { const positionValue = position(point); const category = categoryDetails.get(point.category)!; return <g key={point.id} transform={`translate(${positionValue.x}, ${positionValue.y})`} role="button" tabIndex={0} aria-label={`${point.name.replace(/^Demo /, "")}, ${category.label}, ${(point.source === "Demo location" ? "Illustrative location" : point.source)}`} onClick={() => onSelect(point)} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); onSelect(point); } }}><circle r={point.id === origin.id ? 16 : 12} fill={category.color} stroke="white" strokeWidth="3" /><text textAnchor="middle" dominantBaseline="central" fill="white" fontSize="10" fontWeight="700">{category.symbol}</text></g>; })}
       <text x="20" y="365" fill="#56656b" fontSize="12">Approximate geographic pins · straight-line connections</text>
     </svg>
   </div>;
@@ -142,9 +142,9 @@ export default function ProximityMap({ profile, plan, onInspect }: ProximityMapP
         html: `<span class="geo-marker ${isOrigin ? "geo-marker-origin" : ""}" style="background:${category.color}">${category.symbol}</span>`,
         iconSize: [isOrigin ? 38 : 30, isOrigin ? 38 : 30], iconAnchor: [isOrigin ? 19 : 15, isOrigin ? 19 : 15], popupAnchor: [0, -17],
       });
-      const marker = library.marker([point.lat, point.lng], { icon, keyboard: true, title: point.name, alt: `${point.name}, ${category.label}` }).addTo(layer);
+      const marker = library.marker([point.lat, point.lng], { icon, keyboard: true, title: point.name.replace(/^Demo /, ""), alt: `${point.name.replace(/^Demo /, "")}, ${category.label}` }).addTo(layer);
       marker.bindPopup(popupContent(point, prepared.origin, inspectionEnabled ? (value) => inspectRef.current?.(value) : undefined), { maxWidth: 290, minWidth: 190 });
-      marker.getElement()?.setAttribute("aria-label", `${point.name}, ${category.label}, ${point.source}`);
+      marker.getElement()?.setAttribute("aria-label", `${point.name.replace(/^Demo /, "")}, ${category.label}, ${(point.source === "Demo location" ? "Illustrative location" : point.source)}`);
       marker.on("click", () => setSelectedPoint(point));
       markers.set(point.id, marker);
     }
@@ -177,10 +177,10 @@ export default function ProximityMap({ profile, plan, onInspect }: ProximityMapP
     {unavailable ? <PlainMap points={visiblePoints} origin={prepared.origin} onSelect={select} /> : <div ref={containerRef} role="region" tabIndex={0} className={`geo-map-canvas ${missingTiles ? "geo-map-without-tiles" : ""}`} style={{ minHeight: 390, width: "100%", position: "relative", zIndex: 0, background: "#edf3f4" }} aria-label="Interactive map: drag to pan; use plus and minus controls or keyboard to zoom" />}
     {!loaded && !unavailable && <p className="geo-map-status" role="status">Loading the map. The places below are available now.</p>}
     {(missingTiles || unavailable) && <p className="geo-map-status" role="status">Street tiles are unavailable. Approximate pins, distances and the places list still work.</p>}
-    {activeSelection && <div className="geo-map-selection"><MapPin size={16} /><div><strong>{activeSelection.name}</strong><p>{activeSelection.description}</p></div><button type="button" className="geo-dismiss" onClick={() => setSelectedPoint(null)} aria-label="Dismiss selected map place">×</button></div>}
+    {activeSelection && <div className="geo-map-selection"><MapPin size={16} /><div><strong>{activeSelection.name.replace(/^Demo /, "")}</strong><p>{activeSelection.description}</p></div><button type="button" className="geo-dismiss" onClick={() => setSelectedPoint(null)} aria-label="Dismiss selected map place">×</button></div>}
     <div className="geo-map-places"><h4>Places in this view <span>{visiblePoints.length}</span></h4><ul>
-      {visiblePoints.map((point) => { const category = categoryDetails.get(point.category)!; return <li key={point.id} className="geo-place"><span className="geo-place-symbol" style={{ background: category.color }} aria-hidden="true">{category.symbol}</span><div><button className="geo-place-name" type="button" onClick={() => select(point)}>{point.name}<LocateFixed size={12} aria-hidden="true" /></button><p>{point.role ?? category.label} · {point.id === prepared.origin.id ? "Reference point" : `${haversineKm(prepared.origin, point).toFixed(1)} km straight-line`}</p><small>{point.source}{point.category === "school" || point.category === "transit" ? " · School-bus coverage needs separate confirmation" : ""}</small>{point.sourceUrl && <a href={point.sourceUrl} target="_blank" rel="noopener noreferrer">Official address ↗</a>}</div>{point.inspectKind && point.inspectId && onInspect && <Button variant="ghost" size="sm" onClick={() => onInspect({ kind: point.inspectKind!, id: point.inspectId! })} aria-label={`View ${point.name} planning card`}>View card</Button>}</li>; })}
+      {visiblePoints.map((point) => { const category = categoryDetails.get(point.category)!; return <li key={point.id} className="geo-place"><span className="geo-place-symbol" style={{ background: category.color }} aria-hidden="true">{category.symbol}</span><div><button className="geo-place-name" type="button" onClick={() => select(point)}>{point.name.replace(/^Demo /, "")}<LocateFixed size={12} aria-hidden="true" /></button><p>{point.role ?? category.label} · {point.id === prepared.origin.id ? "Reference point" : `${haversineKm(prepared.origin, point).toFixed(1)} km straight-line`}</p><small>{(point.source === "Demo location" ? "Illustrative location" : point.source)}{point.category === "school" || point.category === "transit" ? " · School-bus coverage needs separate confirmation" : ""}</small>{point.sourceUrl && <a href={point.sourceUrl} target="_blank" rel="noopener noreferrer">Official address ↗</a>}</div>{point.inspectKind && point.inspectId && onInspect && <Button variant="ghost" size="sm" onClick={() => onInspect({ kind: point.inspectKind!, id: point.inspectId! })} aria-label={`View ${point.name.replace(/^Demo /, "")} planning card`}>View card</Button>}</li>; })}
     </ul></div>
-    <p className="geo-map-footer">Base map © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a> · <a href="https://operations.osmfoundation.org/policies/tiles/" target="_blank" rel="noopener noreferrer">Tile usage policy</a> · <a href="https://www.openstreetmap.org/fixthemap" target="_blank" rel="noopener noreferrer">Report a base-map issue</a>. Demo pins do not identify real homes, schools or local services.</p>
+    <p className="geo-map-footer">Base map © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a> · <a href="https://operations.osmfoundation.org/policies/tiles/" target="_blank" rel="noopener noreferrer">Tile usage policy</a> · <a href="https://www.openstreetmap.org/fixthemap" target="_blank" rel="noopener noreferrer">Report a base-map issue</a>. Illustrative pins · confirm locations and availability.</p>
   </section>;
 }

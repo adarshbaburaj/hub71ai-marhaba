@@ -63,11 +63,11 @@ export function validateBankingProfile(value: unknown): BankingValidation {
 }
 
 const demoBundles: Omit<BankingBundle, "rationale">[] = [
-  { id: "everyday-demo", title: "Everyday account concept", accountType: "personal", summary: "A fictional account bundle for daily payments and organising savings questions.", features: ["low-fees", "savings"], questions: ["What are the minimum balance, monthly fees and conditions for any fee waiver?", "What are the savings terms, access restrictions and charges?", "Which residency and identity documents are required by this bank?"] },
-  { id: "rewards-demo", title: "Rewards account concept", accountType: "personal", summary: "A fictional bundle for comparing cashback terms and everyday banking costs.", features: ["cashback", "low-fees"], questions: ["Which spending categories qualify, and what caps or exclusions apply?", "Is cashback conditional on a credit product, salary transfer or annual fee?", "Can the account be opened without additional bundled products?"] },
-  { id: "global-demo", title: "International account concept", accountType: "both", summary: "A fictional bundle for organising personal or business cross-border payment questions.", features: ["international-transfer", "low-fees", "savings"], questions: ["What are the transfer charges, exchange-rate margins and correspondent-bank costs?", "Which currencies, destination countries and transfer limits are supported?", "Does the account serve personal transactions, business transactions, or both?"] },
-  { id: "business-demo", title: "Business essentials concept", accountType: "business", summary: "A fictional bundle for company payments and business-account preparation.", features: ["business", "low-fees", "international-transfer"], questions: ["Which company, ownership and activity documents are required?", "What are the opening deposit, minimum balance, transaction and monthly charges?", "Can the bank support the company's expected payments and international customers?"] },
-  { id: "founder-demo", title: "Founder preparation concept", accountType: "business", summary: "A fictional bundle for separating company money and preparing startup-funding questions.", features: ["business", "startup-funding", "international-transfer"], questions: ["Which funding products or introductions can be investigated, and what terms apply?", "What financial history, security, affordability review or company documentation may be required?", "Which application costs are payable even if funding is not approved?"] },
+  { id: "everyday-demo", title: "Everyday account concept", accountType: "personal", summary: "A question set for daily payments and organising savings questions.", features: ["low-fees", "savings"], questions: ["What are the minimum balance, monthly fees and conditions for any fee waiver?", "What are the savings terms, access restrictions and charges?", "Which residency and identity documents are required by this bank?"] },
+  { id: "rewards-demo", title: "Rewards account concept", accountType: "personal", summary: "A question set for comparing cashback terms and everyday banking costs.", features: ["cashback", "low-fees"], questions: ["Which spending categories qualify, and what caps or exclusions apply?", "Is cashback conditional on a credit product, salary transfer or annual fee?", "Can the account be opened without additional bundled products?"] },
+  { id: "global-demo", title: "International account concept", accountType: "both", summary: "A question set for organising personal or business cross-border payment questions.", features: ["international-transfer", "low-fees", "savings"], questions: ["What are the transfer charges, exchange-rate margins and correspondent-bank costs?", "Which currencies, destination countries and transfer limits are supported?", "Does the account serve personal transactions, business transactions, or both?"] },
+  { id: "business-demo", title: "Business essentials concept", accountType: "business", summary: "A question set for company payments and business-account preparation.", features: ["business", "low-fees", "international-transfer"], questions: ["Which company, ownership and activity documents are required?", "What are the opening deposit, minimum balance, transaction and monthly charges?", "Can the bank support the company's expected payments and international customers?"] },
+  { id: "founder-demo", title: "Founder preparation concept", accountType: "business", summary: "A question set for separating company money and preparing startup-funding questions.", features: ["business", "startup-funding", "international-transfer"], questions: ["Which funding products or introductions can be investigated, and what terms apply?", "What financial history, security, affordability review or company documentation may be required?", "Which application costs are payable even if funding is not approved?"] },
 ];
 
 /** Scores and residency never determine eligibility, rank, limits, rates or terms. */
@@ -100,7 +100,7 @@ export function prepareBankingQuestions(profile: BankingProfile, bundle: Banking
     ...(sharing.includeExistingBanks && p.existingBanks ? [`Existing bank names supplied: ${p.existingBanks}.`] : []),
     ...(sharing.includeCreditScore && p.creditScore !== null ? [`Optional current Etihad score supplied: ${p.creditScore}. Please explain which additional information and checks you require; this number does not establish eligibility or approval.`] : []),
   ];
-  return `Marhaba banking questions\n${bundle.title} · synthetic demonstration concept\n\n${context.join("\n")}\n\n${bundle.questions.map(question => `- ${question}`).join("\n")}\n\nPlease confirm actual product terms, eligibility, fees and availability. No application has been submitted.`;
+  return `Marhaba banking questions\n${bundle.title} · account planning concept\n\n${context.join("\n")}\n\n${bundle.questions.map(question => `- ${question}`).join("\n")}\n\nPlease confirm actual product terms, eligibility, fees and availability. No application has been submitted.`;
 }
 
 export function saveBankingProfile(storage: BankingStorage, profile: BankingProfile): { saved: boolean; message: string } {
@@ -122,7 +122,7 @@ export function loadBankingProfile(storage: BankingStorage): { profile: BankingP
     const valid = stored?.version === 1 ? validateBankingProfile(stored.profile) : { profile: null };
     return valid.profile ? { profile: valid.profile, message: "Saved banking preferences loaded from this device." } : { profile: null, message: "Saved banking preferences could not be read. Start a fresh comparison." };
   } catch {
-    return { profile: null, message: "Device storage is unavailable. You can still explore the demo concepts." };
+    return { profile: null, message: "Device storage is unavailable. You can still explore the account concepts." };
   }
 }
 

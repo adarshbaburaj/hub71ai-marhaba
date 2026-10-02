@@ -7,3 +7,6 @@ test-results/
 playwright-report/
 *.tsbuildinfo
 next-env.d.ts
+
+# Local code navigation artifacts
+graphify-out/

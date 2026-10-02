@@ -11,9 +11,34 @@ vi.mock("openai", () => ({
 }));
 
 describe("confirmed guide edits", () => {
+  it("validates and retains per-child ages including dormant sibling answers", () => {
+    const next = applyProfileEdits(sampleProfile(), [
+      { path: "household.composition", value: "single-parent" },
+      { path: "household.children", value: 3 },
+      { path: "household.childAges", value: [2, 8, null] },
+    ]);
+    expect(next.household.child.age).toBe(2);
+    expect(next.household.childAges).toEqual([2, 8, null]);
+    const fewer = applyProfileEdits(next, [{ path: "household.children", value: 1 }]);
+    expect(fewer.household.childAges).toEqual([2, 8, null]);
+    const edited = applyProfileEdits(fewer, [{ path: "household.childAges", value: [3] }]);
+    const restored = applyProfileEdits(edited, [{ path: "household.children", value: 3 }]);
+    expect(restored.household.childAges).toEqual([3, 8, null]);
+    expect(() => applyProfileEdits(next, [{ path: "household.childAges", value: [22] }])).toThrow();
+    expect(describeProfileEdit(next, { path: "household.childAges", value: [3, 9, 10] }).after).toContain("Child 2: 9 years");
+    const legacy = applyProfileEdits(next, [{ path: "household.child.age", value: 4 }]);
+    expect(legacy.household.childAges).toEqual([4, 8, null]);
+  });
+
   it("accepts a complete blank or example profile", () => {
     expect(profileSchema.safeParse(blankProfile()).success).toBe(true);
     expect(profileSchema.safeParse(sampleProfile()).success).toBe(true);
+  });
+
+  it("accepts at most 20 children and rejects fractional or out-of-range counts", () => {
+    expect(applyProfileEdits(sampleProfile(), [{ path: "household.children", value: 20 }]).household.children).toBe(20);
+    for (const value of [-1, 1.5, 21]) expect(() => applyProfileEdits(sampleProfile(), [{ path: "household.children", value }])).toThrow();
+    expect(() => applyProfileEdits(sampleProfile(), [{ path: "household.childAges", value: Array.from({ length: 21 }, () => 8) }])).toThrow();
   });
 
   it("accepts the form's age range through 21 without falsely confirming school stage", () => {

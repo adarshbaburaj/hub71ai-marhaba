@@ -1,0 +1,43 @@
+.explorer{min-width:0;width:100%;padding:13px 12px 11px;border:1px solid #DEDAD3;border-radius:17px;background:#FAFAF7;color:#171717;overflow:hidden}
+.eyebrow{display:flex;align-items:center;gap:5px;color:#7B746A;font-size:8px;font-weight:800;letter-spacing:1.4px;line-height:11px}
+.title{margin:5px 0 3px;font-size:20px;font-weight:750;line-height:1.15;letter-spacing:-.8px}
+.intro{margin:0;color:#77736C;font-size:10px;line-height:1.4}
+.areas{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;margin-top:8px}
+.area{min-width:0;padding:6px 7px;display:flex;flex-direction:column;gap:3px;text-align:left;background:#FFFFFC;border:1px solid #DCD8D1;border-radius:9px;cursor:pointer;transition:border-color 180ms,background 180ms}
+.area:hover{border-color:#C8897E}
+.area:focus-visible,.layer:focus-visible{outline:2px solid #CA493B;outline-offset:3px}
+.selected{border-color:#D46A5B;background:#FFF4EE}
+.areaHeading{display:flex;align-items:center;justify-content:space-between;gap:3px;width:100%;font-size:10px;font-weight:750;line-height:1.2;letter-spacing:-.2px}
+.check{display:grid;place-items:center;flex-shrink:0;width:13px;height:13px;border:1px solid #D8D2C9;border-radius:50%;font-size:10px;line-height:1;color:#8F8074}
+.selected .check{border-color:#CC5848;background:#CC5848;color:white}
+.details{display:flex;justify-content:space-between;flex-wrap:wrap;gap:1px 3px;color:#80786E;font-size:8px;line-height:1.25}
+.details strong{font-size:9px;font-weight:800;color:#42352E}
+.details>span:last-child{color:#B64037;font-weight:700}
+.snapshotHeading{display:flex;justify-content:space-between;align-items:center;gap:5px;margin:10px 0 5px;font-size:9px;line-height:1.3}
+.snapshotHeading strong{font-weight:750}
+.snapshotHeading>span{flex-shrink:0;font-size:8px;color:#81776F}
+.layers{display:flex;flex-wrap:wrap;gap:4px}
+.layer{display:inline-flex;align-items:center;gap:4px;min-height:24px;border:1px solid #DED8D1;border-radius:20px;padding:4px 7px;background:transparent;color:#8F847B;font-size:9px;line-height:1;cursor:pointer}
+.layerOn{border-color:var(--connection,#6F655C);background:#FFFFFC;color:var(--connection,#6F655C)}
+.workConnection{--connection:#B64037}.schoolConnection{--connection:#2C7552}.foodConnection{--connection:#2C66A6}.hobbiesConnection{--connection:#6F655C}
+.legend{display:flex;gap:9px;margin-top:4px;font-size:8px;line-height:1.3;color:#6F655C}
+.legend span{display:flex;align-items:center;gap:4px}.legend span:before{content:'';width:9px;height:2px;border-radius:1px;background:var(--connection)}
+.diagram{position:relative;margin:4px 0 0;height:96px;width:100%}
+.connections{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.branch{stroke:var(--connection,#6F655C);stroke-width:1.8;stroke-linecap:round}
+.routeLight{stroke:#FFF1D7;stroke-width:4;stroke-linecap:round;stroke-dasharray:1 99;filter:drop-shadow(0 0 2px var(--connection,#6F655C));animation:travel 3s linear infinite}
+.home{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;align-items:center;flex-direction:column;gap:3px;width:30%;padding:7px 2px;text-align:center;border:1px solid #D6CCC0;border-radius:9px;background:#FFFFFC}
+.home>span{display:flex;align-items:center;gap:3px;font-size:8px;color:#8A7160;line-height:1.1}
+.home strong{font-size:9px;font-weight:750;line-height:1.2;letter-spacing:-.2px}
+.place{position:absolute;transform:translate(-50%,-50%);display:flex;align-items:center;flex-direction:column;gap:3px;width:32%;padding:4px 1px;border-radius:7px;background:#FAFAF7;text-align:center}
+.place strong{display:flex;align-items:center;justify-content:center;gap:3px;font-size:9px;font-weight:750;line-height:1.1}
+.place>span{font-size:8px;line-height:1.2;color:var(--connection,#6F655C)}
+.food{left:16.67%;top:22.92%}
+.work{left:83.33%;top:22.92%}
+.hobbies{left:16.67%;top:77.08%}
+.school{left:83.33%;top:77.08%}
+.note{margin:4px 0 0;color:#8A8178;font-size:8px;line-height:1.5}
+.srOnly{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@keyframes travel{from{stroke-dashoffset:100}to{stroke-dashoffset:0}}
+@media(max-width:350px){.explorer{padding:12px 9px 10px}.area{padding:6px}.areaHeading{font-size:9px}.details{font-size:7px}.details strong{font-size:8px}.snapshotHeading{font-size:8px}.snapshotHeading>span{font-size:7px}.place strong{font-size:8px}.place>span{font-size:7px}.layer{padding:4px 6px}}
+@media(prefers-reduced-motion:reduce){.area{transition:none}.routeLight{animation:none;stroke-dashoffset:50}}

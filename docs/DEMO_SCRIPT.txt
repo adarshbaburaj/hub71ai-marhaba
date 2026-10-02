@@ -1,0 +1,49 @@
+MARHABA — SHORT DEMO SCRIPT
+
+Open http://localhost:3000. If the server is stopped, run npm run dev.
+
+1. WELCOME
+Show the welcome page. Choose either business path and press Let’s go / start.
+Say: “Meet Nori. Tell it about your business, family and budget.”
+
+2. QUICK QUESTIONS
+For a short family example: Software & technology; My partner, children and me;
+add a second child; enter ages 7 and 12; British; Al Reem Island; one rental car;
+monthly budget AED 30,000; continue through priorities.
+Say: “Nori builds the move in a few quick steps, including each child’s age.
+The timeline stays editable as the plan takes shape.”
+
+3. FIRST ESTIMATE
+Show Explore and toggle one connected-place layer.
+Say: “Here’s Nori’s first estimate: connected places, travel times and spending.
+These are demonstration figures; real prices and availability need checking.”
+
+4. MONEY
+Open Money. Switch Payment timing to Monthly spending and select a period.
+Say: “Average spending and payment dates tell different stories. The graph
+shows both, even before you add opening cash.”
+
+5. LUNA
+Click Ask Nori and type: “What needs confirming before I rely on this plan?”
+Say: “You can also type directly to Nori. Luna explains the current estimate,
+and any proposed answer changes wait for your approval.”
+Close chat before continuing.
+
+6. NORI AT WORK
+Return to Explore, or choose a plan and open Next steps.
+Press See Nori at work. The text repeats every 22 seconds.
+Use Pause to discuss a message; Replay starts the case again.
+Say: “Here’s Nori texting an estate adviser about a two-bedroom home.
+It asks about rent, deposits and payment dates, then brings the reply back
+into the plan. This is a simulated conversation; no real message is sent.”
+
+RECORDED VOICE MESSAGES
+
+Click Voice message · Nori to hear the supplied Nori WAV (1.75 seconds).
+Click Voice message · estate agent to hear the supplied MP3 (about 5.6 seconds).
+The estate agent's message appears later in the conversation.
+
+Listening pauses the conversation. Use Resume to continue the text loop.
+Replay or closing the dialog stops playback. Neither clip plays automatically.
+This fixed two-bedroom case is an example, not a confirmed offer for a selected
+home. Audio is bundled locally; no live speech service or adviser is contacted.

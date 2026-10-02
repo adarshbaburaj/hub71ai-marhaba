@@ -51,10 +51,26 @@ describe("single-question onboarding", () => {
 
   it("grows child questions only for a family and keeps school bus separate from car access", () => {
     const profile = sampleProfile();
+    expect(questionsForNode(profile, "household").map((item) => item.id)).toContain("child-count");
     expect(questionsForNode(profile, "child").map((item) => item.id)).toEqual(["child-age", "child-curriculum", "child-swimming", "child-bus"]);
     const schoolBus = applyQuestionAnswer(profile, question("child-bus"), true);
     expect(schoolBus.household.child.schoolBusEssential).toBe(true);
     expect(schoolBus.transport.car).toBe(profile.transport.car);
+  });
+
+  it("asks a lean core spine after welcome defaults", () => {
+    const profile = blankProfile();
+    profile.intent = "start";
+    profile.business.workspace = "desk";
+    profile.business.workplaceId = "harbor-lab";
+    expect(questionsForProfile(profile, { coreOnly: true }).map((item) => item.id)).toEqual([
+      "business-field", "household-composition", "home-areas", "transport-car", "money-budget", "priorities-order",
+    ]);
+    profile.household.composition = "family";
+    profile.household.children = 2;
+    expect(questionsForProfile(profile, { coreOnly: true }).map((item) => item.id)).toEqual([
+      "business-field", "household-composition", "child-age", "child-curriculum", "home-areas", "transport-car", "money-budget", "priorities-order",
+    ]);
   });
 
   it("preserves dormant child answers while excluding them from effective circumstances", () => {
@@ -67,6 +83,35 @@ describe("single-question onboarding", () => {
     const restored = applyQuestionAnswer(solo, question("household-composition"), "family");
     expect(restored.household.child).toEqual(original.household.child);
     expect(questionsForNode(restored, "child")).toHaveLength(4);
+    expect(questionsForNode(restored, "household").some((item) => item.id === "child-count")).toBe(true);
+  });
+
+  it("retains hidden sibling ages when a smaller household edits its visible age", () => {
+    let profile = sampleProfile();
+    profile.household.children = 3;
+    profile.household.childAges = [7, 10, 14];
+    profile = applyQuestionAnswer(profile, question("child-count"), 1);
+    profile = applyQuestionAnswer(profile, question("child-age"), [8]);
+    profile = applyQuestionAnswer(profile, question("child-count"), 3);
+    expect(readQuestionAnswer(profile, question("child-age"))).toEqual([8, 10, 14]);
+    profile = applyQuestionAnswer(profile, question("household-composition"), "single-parent");
+    expect(questionsForProfile(profile).some(item => item.id.startsWith("partner-"))).toBe(false);
+    expect(profileSchema.safeParse(profile).success).toBe(true);
+  });
+
+  it("confirms child count with ages while retaining removed siblings and unknown new ages", () => {
+    let profile = sampleProfile();
+    profile.household.children = 3;
+    profile.household.childAges = [7, 10, 14];
+    const original = structuredClone(profile);
+    profile = applyQuestionAnswer(profile, question("child-age"), [8]);
+    expect(original.household.children).toBe(3);
+    expect(profile.household.children).toBe(1);
+    expect(profile.household.childAges).toEqual([8, 10, 14]);
+    profile = applyQuestionAnswer(profile, question("child-age"), [8, 10, 14, null]);
+    expect(profile.household.children).toBe(4);
+    expect(readQuestionAnswer(profile, question("child-age"))).toEqual([8, 10, 14, null]);
+    expect(profileSchema.safeParse(profile).success).toBe(true);
   });
 
   it("recovers forward navigation when a dependent question has become irrelevant", () => {

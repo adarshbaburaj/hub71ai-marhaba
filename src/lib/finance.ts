@@ -1,4 +1,4 @@
-import { effectiveProfile, hasChild, hasPartner } from "./profile";
+import { activeChildAges, effectiveProfile, hasChild, hasPartner, schoolChildCount } from "./profile";
 import type { Activity, CashPoint, CostLine, FinanceResult, Home, MoveProfile, PaymentEvent, Plan, School, Workplace } from "./types";
 
 export interface FinanceInputs {
@@ -45,33 +45,38 @@ function projection(opening: number, date: string, events: PaymentEvent[]): Cash
 
 export function calculateFinance(input: MoveProfile, options: FinanceInputs): FinanceResult {
   const p = effectiveProfile(input);
-  const school = hasChild(p) ? options.school : null;
-  const activity = hasChild(p) ? options.activity : null;
+  const childCount = schoolChildCount(p);
+  const school = childCount > 0 ? options.school : null;
+  const activity = childCount > 0 ? options.activity : null;
   const workplace = p.business.workspace === "remote" ? null : options.workplace;
-  const living = options.livingMonthly ?? 500_000;
+  // Preserve the original one-child family allowance, adding a visible amount per sibling.
+  const living = options.livingMonthly ?? 500_000 + Math.max(0, activeChildAges(p).length - 1) * 60_000;
   const partnerTravels = hasPartner(p) && ["office", "hybrid"].includes(p.household.partner.work) && p.household.partner.days > 0;
   const schoolBus = !!school && (p.household.child.schoolBusEssential || options.transport !== "rental");
   const baseTransport = options.transport === "rental" ? 280_000 + (partnerTravels ? 60_000 : 0) : options.transport === "bus-taxi" ? 90_000 : options.transport === "taxi" ? 160_000 : 45_000;
-  const transport = options.transportMonthly ?? baseTransport + (schoolBus ? 25_000 : 0) + (activity ? 10_000 : 0);
+  // Sibling school-bus seats and activity places scale pragmatically; one shared journey chain remains.
+  const transport = options.transportMonthly ?? baseTransport + (schoolBus ? 25_000 * Math.max(1, childCount) : 0) + (activity ? 10_000 * Math.max(1, childCount) : 0);
   const rentalDeposit = options.transportDeposit ?? (options.transport === "rental" ? 150_000 : 0);
   const setup = options.setupCost ?? 400_000;
+  const schoolAnnual = school ? school.annualFee * Math.max(1, childCount) : 0;
+  const activityMonthly = activity ? activity.monthlyCost * Math.max(1, childCount) : 0;
   const costs: CostLine[] = [
-    { label: "Housing (annual rent averaged)", monthly: monthlyEquivalent(options.home.annualRent), source: "Demo estimate", account: "household" },
-    ...(school ? [{ label: "School (annual fee averaged)", monthly: monthlyEquivalent(school.annualFee), source: "Demo estimate" as const, account: "household" as const }] : []),
-    { label: "Transport and supported travel package", monthly: transport, source: "Demo estimate", account: "household" },
-    { label: "Living costs, utilities and insurance allowance", monthly: living, source: "Demo estimate", account: "household" },
-    ...(activity ? [{ label: "External swimming activity", monthly: activity.monthlyCost, source: "Demo estimate" as const, account: "household" as const }] : []),
+    { label: "Housing (annual rent averaged)", monthly: monthlyEquivalent(options.home.annualRent), source: "Planning estimate", account: "household" },
+    ...(school ? [{ label: childCount > 1 ? `School for ${childCount} children (annual fees averaged)` : "School (annual fee averaged)", monthly: monthlyEquivalent(schoolAnnual), source: "Planning estimate" as const, account: "household" as const }] : []),
+    { label: "Transport and supported travel package", monthly: transport, source: "Planning estimate", account: "household" },
+    { label: "Living costs, utilities and insurance allowance", monthly: living, source: "Planning estimate", account: "household" },
+    ...(activity ? [{ label: childCount > 1 ? `External swimming for ${childCount} children` : "External swimming activity", monthly: activityMonthly, source: "Planning estimate" as const, account: "household" as const }] : []),
   ];
   const unknownBusinessQuote = p.business.workspace === "specialist" || (p.business.workspace !== "remote" && !workplace);
   if (p.business.includeFinances) {
-    if (workplace) costs.push({ label: workplace.id === "harbor-lab" ? "Workspace allowance near Hub71 (not a Hub71 price)" : "Founder workspace", monthly: workplace.monthlyCost, source: "Demo estimate", account: "business" });
+    if (workplace) costs.push({ label: workplace.id === "harbor-lab" ? "Workspace allowance near Hub71 (not a Hub71 price)" : "Founder workspace", monthly: workplace.monthlyCost, source: "Planning estimate", account: "business" });
     if (p.business.monthlySpending !== null) costs.push({ label: "Other business spending", monthly: p.business.monthlySpending, source: "Your input", account: "business" });
     if (p.business.founderPay > 0) costs.push({ label: "Founder pay (transfer to household)", monthly: p.business.founderPay, source: "Your input", account: "business" });
   }
   const monthlyHousehold = costs.filter(c => c.account === "household").reduce((sum, c) => sum + c.monthly, 0);
   const monthlyBusiness = !p.business.includeFinances || p.business.monthlySpending === null || unknownBusinessQuote ? null : costs.filter(c => c.account === "business").reduce((sum, c) => sum + c.monthly, 0);
   const firstRent = Math.round(options.home.annualRent / options.home.installments);
-  const firstSchool = school ? Math.round(school.annualFee / school.installments) : 0;
+  const firstSchool = school ? Math.round(schoolAnnual / school.installments) : 0;
   const deposit = options.home.deposit + rentalDeposit;
   const arrivalCash = firstRent + firstSchool + deposit + setup;
   const events: PaymentEvent[] = [];
@@ -88,7 +93,7 @@ export function calculateFinance(input: MoveProfile, options: FinanceInputs): Fi
       for (let i = 0; i < count; i++) add(`${id}-${i}`, monthDate(date, Math.floor(i * 12 / count)), `${label} ${i + 1}/${count}`, -(i === count - 1 ? amount - installment * (count - 1) : installment), "household", "expense");
     };
     instalments("rent", "Rent instalment", options.home.annualRent, options.home.installments);
-    if (school) instalments("school", "School instalment", school.annualFee, school.installments);
+    if (school) instalments("school", childCount > 1 ? `School instalment (${childCount} children)` : "School instalment", schoolAnnual, school.installments);
     add("home-deposit", date, "Refundable housing deposit, return not assumed", -options.home.deposit, "household", "deposit");
     add("transport-deposit", date, "Refundable rental-car deposit, return not assumed", -rentalDeposit, "household", "deposit");
     add("arrival-setup", date, "Moving and household setup allowance", -setup, "household", "expense");
@@ -100,7 +105,7 @@ export function calculateFinance(input: MoveProfile, options: FinanceInputs): Fi
       const incomeDate = offsetDays(periodEnd, -5);
       add(`living-${month}`, billDate, "Living costs, utilities and insurance allowance", -living, "household", "expense");
       add(`transport-${month}`, billDate, "Transport package", -transport, "household", "expense");
-      if (activity) add(`activity-${month}`, billDate, "External swimming activity", -activity.monthlyCost, "household", "expense");
+      if (activity) add(`activity-${month}`, billDate, childCount > 1 ? `External swimming (${childCount} children)` : "External swimming activity", -activityMonthly, "household", "expense");
       if (p.money.monthlyIncome !== null) add(`income-${month}`, incomeDate, "External household income", p.money.monthlyIncome, "household", "income");
       if (p.business.includeFinances) {
         if (workplace) add(`workspace-${month}`, billDate, workplace.id === "harbor-lab" ? "Workspace allowance near Hub71 (not a Hub71 price)" : "Founder workspace", -workplace.monthlyCost, "business", "expense");
@@ -121,7 +126,7 @@ export function calculateFinance(input: MoveProfile, options: FinanceInputs): Fi
   return {
     monthlyHousehold, monthlyBusiness, arrivalCash, deposit, costs, events, householdProjection, businessProjection, lowestHousehold, firstBelowReserve,
     // The prototype does not price business setup approvals; enabled business totals stay partial.
-    partial: p.money.moveDate === null || unknownBusinessQuote || (!!hasChild(p) && !school) || p.business.includeFinances,
+    partial: p.money.moveDate === null || unknownBusinessQuote || (!!hasChild(p) && !school) || activeChildAges(p).some(age => age === null || age < 5 || age > 18) || p.business.includeFinances,
   };
 }
 
