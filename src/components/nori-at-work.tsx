@@ -44,7 +44,7 @@ export function NoriAtWork({ open, onClose }: NoriAtWorkProps) {
   }, []);
   useEffect(() => {
     if (!open || paused) return;
-    const timer = window.setTimeout(() => { if (step === messages.length - 1) cancelVoice(); setStep((step + 1) % messages.length); }, 2200);
+    const timer = window.setTimeout(() => { if (step === messages.length - 1) { cancelVoice(); setPosition({ speaker: null, time: 0 }); } setStep((step + 1) % messages.length); }, 2200);
     return () => window.clearTimeout(timer);
   }, [open, paused, step, run, messages.length, cancelVoice]);
   useEffect(() => { if (log.current) log.current.scrollTop = log.current.scrollHeight; }, [open, step]);
@@ -61,7 +61,7 @@ export function NoriAtWork({ open, onClose }: NoriAtWorkProps) {
     try {
       clip = new Audio(speaker === "nori" ? "/audio/nori-enquiry.wav" : "/audio/estate-agent-2bhk.mp3");
       voice.current = clip;
-      clip.onloadedmetadata = () => { if (clip && voice.current === clip && Number.isFinite(clip.duration)) setDurations(current => ({ ...current, [speaker]: clip!.duration })); };
+      clip.onloadedmetadata = () => { if (!clip || voice.current !== clip || !Number.isFinite(clip.duration) || clip.duration <= 0) return; const duration = clip.duration; setDurations(current => ({ ...current, [speaker]: duration })); };
       clip.ontimeupdate = () => { if (clip && voice.current === clip) setPosition({ speaker, time: clip.currentTime }); };
       clip.onended = () => { if (!clip || voice.current !== clip) return; setPosition({ speaker, time: Number.isFinite(clip.duration) ? clip.duration : durations[speaker] }); cancelVoice(); setPlayingVoice(null); setVoiceNotice("Voice message finished. Resume when you’re ready."); };
       clip.onerror = () => { if (voice.current !== clip) return; cancelVoice(); setPlayingVoice(null); setVoiceNotice("The voice message could not play. Try again or resume the conversation."); };

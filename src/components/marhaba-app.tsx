@@ -169,7 +169,7 @@ function Landing({ onBegin, onSample, hasExisting, onResume }: { onBegin: (inten
   return <main className="blank-start">
     <StartCursor />
     <section className="start-document" aria-labelledby="start-question">
-      <div className="start-greeting"><NoriBlob size="medium" interactive /><span>Hi, I’m Nori, your AI friend in UAE!</span></div>
+      <div className="start-greeting"><NoriBlob size="medium" interactive /><span><span>Hi, I’m Nori, your AI friend in UAE!</span><small className="start-agent-note">I’ll spin up subagents to help you reach your goal faster.</small></span></div>
       <p className="start-eyebrow">To Abu Dhabi; made easier</p>
       <h1 id="start-question">Marhaba</h1>
       <p className="start-intro">Tell Nori about your move. Get a connected estimate, then see how the next conversations could unfold.</p>

@@ -25,10 +25,10 @@ export const HUB71_COORDINATES: Coordinates = { lat: 24.4985, lng: 54.3898 };
 
 export const MAP_CATEGORIES: { id: MapCategory; label: string; color: string; symbol: string }[] = [
   { id: "home", label: "Home", color: "#34495e", symbol: "H" },
-  { id: "office", label: "Work", color: "#3674d9", symbol: "W" },
-  { id: "school", label: "School", color: "#c98b19", symbol: "S" },
+  { id: "office", label: "Work", color: "#B64037", symbol: "W" },
+  { id: "school", label: "School", color: "#2C7552", symbol: "S" },
   { id: "healthcare", label: "Healthcare", color: "#cf5c79", symbol: "+" },
-  { id: "groceries", label: "Groceries", color: "#3b9268", symbol: "G" },
+  { id: "groceries", label: "Groceries", color: "#2C66A6", symbol: "G" },
   { id: "transit", label: "Public bus", color: "#8467c4", symbol: "B" },
   { id: "leisure", label: "Hobbies", color: "#28938f", symbol: "L" },
 ];

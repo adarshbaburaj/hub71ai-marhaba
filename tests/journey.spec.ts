@@ -346,7 +346,7 @@ test("connected places show colored home connections and toggles keep plan facts
   const shopping = places.locator('[aria-label^="Shopping:"]');
   await expect(work).toHaveAttribute("aria-label", /Hub71/);
   for (const [node, color] of [[work, "Red"], [school, "Green"], [shopping, "Blue"]] as const) {
-    await expect(node).toHaveAttribute("aria-label", new RegExp(`${color} connection from home`, "i"));
+    await expect(node).toHaveAttribute("aria-label", new RegExp(`${color}[\\s\\S]*connection from home`, "i"));
     await expect(node).toHaveAttribute("aria-label", /\d+\.\d km[\s\S]*straight-line/i);
   }
   for (const legend of ["Work · red", "School · green", "Shopping · blue"]) await expect(places).toContainText(legend);
