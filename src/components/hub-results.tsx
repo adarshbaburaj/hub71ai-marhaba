@@ -68,8 +68,8 @@ export function HubResults({ profile, plan, onInspect }: HubResultsProps) {
   const layers = [{ id: "home", label: "Home" }, { id: "market", label: "Shopping" }, ...(hasChild(p) ? [{ id: "school", label: school ? "School" : "Care" }] : []), { id: "work", label: "Work" }, { id: "parks", label: "Outdoors" }];
   const visibleSpokes = spokes.filter(spoke => !hidden.includes(spoke.id) && (spoke.id !== "school" || hasChild(p)));
   const connectedSpokes = hidden.includes("home") ? [] : visibleSpokes.filter(spoke => spoke.connection !== "work" || !hidden.includes("work"));
-  const paths = { top: "M200 290H285V105H200V48", left: "M180 310V245H50V180", right: "M220 310V245H350V180", bottom: "M200 310V180" };
-  const mobilePaths = { top: "M90 310V160H100", left: "M120 310H230V160H300", right: "M120 320H300V310", bottom: "M100 290H200V35" };
+  const paths = { top: "M200 310H135V95H200V48", left: "M180 310V272H50V180", right: "M220 310V272H350V180", bottom: "M200 310V180" };
+  const mobilePaths = { top: "M90 310V160H100", left: "M100 290H195V160H300", right: "M120 320H300V310", bottom: "M100 290H202V35" };
   const anchorContent = <><span className={styles.spokeLabel}>{workplace ? "WORK" : "YOUR BASE"}</span><strong>{anchorName}</strong><small>{workplace ? workDistance : p.business.workspace === "remote" ? "0 km · work from home" : "Workspace to confirm"}</small></>;
   const anchorLabel = `Work: ${anchorName}. Red work connection from home. ${workDistance}. ${homeJourney}.`;
   return <div className={styles.shell} aria-label={`${anchorName} life diagram and expenses`}>

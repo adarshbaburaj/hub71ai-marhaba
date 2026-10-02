@@ -60,6 +60,7 @@ async function answerBusiness(page: Page) {
 test("the empty start offers exactly two business directions", async ({ page }) => {
   await expect(page.getByText("To Abu Dhabi; made easier", { exact: true })).toBeVisible();
   await expect(page.getByText("Hi, I’m Nori, your AI friend in UAE!", { exact: true })).toBeVisible();
+  await expect(page.getByText("I’ll spin up subagents to help you reach your goal faster.", { exact: true })).toBeVisible();
   await expect(page.locator(".entry-option")).toHaveCount(2);
   await expect(page.getByRole("radio", { name: "Plan to move business to AD", exact: true })).toBeVisible();
   await expect(page.getByRole("radio", { name: "Plan to start your startup in AD", exact: true })).toBeVisible();
@@ -142,12 +143,14 @@ test("Nori's agent conversations loop locally and voices play only on click", as
   await expect(noriVoice).toHaveAccessibleName("Voice message · Nori");
   await noriVoice.click();
   await expect(dialog.getByRole("status")).toContainText(/playing.*Nori/i);
+  await expect(noriVoice).toHaveAttribute("aria-pressed", "true");
   await expect(dialog.getByRole("button", { name: "Resume", exact: true })).toBeVisible();
   expect(await page.evaluate(() => (window as unknown as { demoVoices: string[] }).demoVoices)).toEqual(["/audio/nori-enquiry.wav"]);
   await page.clock.runFor(5000);
   await expect(messages).toHaveCount(1);
   await page.evaluate(() => { (window as unknown as { demoAudio: HTMLMediaElement }).demoAudio.currentTime = .3; });
   await noriVoice.click();
+  await expect(noriVoice).toHaveAttribute("aria-pressed", "false");
   expect(await page.evaluate(() => (window as unknown as { demoAudio: HTMLMediaElement }).demoAudio.currentTime)).toBe(0);
   expect(await page.evaluate(() => (window as unknown as { demoPauses: string[] }).demoPauses)).toContain("/audio/nori-enquiry.wav");
   await noriVoice.click();
@@ -161,6 +164,10 @@ test("Nori's agent conversations loop locally and voices play only on click", as
   await expect(dialog).toContainText(/2BHK|two-bedroom/i);
   await expect(messages.first()).toHaveAttribute("data-message-direction", "outgoing");
   await expect(messages.nth(3)).toHaveAttribute("data-message-direction", "incoming");
+  const outgoingBubble = await messages.first().boundingBox();
+  const incomingBubble = await messages.nth(3).boundingBox();
+  expect(outgoingBubble!.x).toBeGreaterThan(incomingBubble!.x);
+  expect(outgoingBubble!.x + outgoingBubble!.width).toBeGreaterThan(incomingBubble!.x + incomingBubble!.width);
   await messages.nth(7).getByRole("button", { name: "Voice message · estate agent", exact: true }).click();
   expect(await page.evaluate(() => (window as unknown as { demoVoices: string[] }).demoVoices)).toEqual(["/audio/nori-enquiry.wav", "/audio/nori-enquiry.wav", "/audio/estate-agent-2bhk.mp3"]);
   await expect(dialog.getByRole("button", { name: "Resume", exact: true })).toBeVisible();

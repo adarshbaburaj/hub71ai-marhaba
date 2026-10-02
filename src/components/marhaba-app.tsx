@@ -162,7 +162,12 @@ function restoreDialogFocus(event: Event, previous: HTMLElement | null) {
   (previous?.isConnected ? previous : fallback)?.focus({ preventScroll: true });
 }
 
-function Wordmark() { return <span className="wordmark">marhaba<span className="wordmark-period">.</span></span>; }
+function Wordmark({ className }: { className?: string }) {
+  return <svg className={cn("wordmark", className)} viewBox="278 252 1237 411" role="img" aria-label="Marhaba" focusable="false">
+    {/* Frame the supplied artwork without changing the original transparent image. */}
+    <image href="/marhaba-logo.png" width="1774" height="887" />
+  </svg>;
+}
 function GuideMark() { return <span className="guide-mark" aria-hidden="true"><NoriBlob size="small" /></span>; }
 function Landing({ onBegin, onSample, hasExisting, onResume }: { onBegin: (intent: Intent) => void; onSample: () => void; hasExisting: boolean; onResume: () => void }) {
   const [picked, setPicked] = useState<Intent | null>(null);

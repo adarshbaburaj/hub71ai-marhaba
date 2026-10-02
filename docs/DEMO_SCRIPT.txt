@@ -4,7 +4,8 @@ Open http://localhost:3000. If the server is stopped, run npm run dev.
 
 1. WELCOME
 Show the welcome page. Choose either business path and press Let’s go / start.
-Say: “Meet Nori. Tell it about your business, family and budget.”
+Say: “Meet Nori, your AI friend in UAE. Tell it about your business, family and
+budget. Nori coordinates smaller agents to help you reach your goal faster.”
 
 2. QUICK QUESTIONS
 For a short family example: Software & technology; My partner, children and me;
@@ -14,7 +15,8 @@ Say: “Nori builds the move in a few quick steps, including each child’s age.
 The timeline stays editable as the plan takes shape.”
 
 3. FIRST ESTIMATE
-Show Explore and toggle one connected-place layer.
+Show Explore and toggle one connected-place layer. Point to Hub71 and the
+red work, green school and blue shopping connections, with their distances.
 Say: “Here’s Nori’s first estimate: connected places, travel times and spending.
 These are demonstration figures; real prices and availability need checking.”
 
@@ -33,9 +35,9 @@ Close chat before continuing.
 Return to Explore, or choose a plan and open Next steps.
 Press See Nori at work. The text repeats every 22 seconds.
 Use Pause to discuss a message; Replay starts the case again.
-Say: “Here’s Nori texting an estate adviser about a two-bedroom home.
-It asks about rent, deposits and payment dates, then brings the reply back
-into the plan. This is a simulated conversation; no real message is sent.”
+Say: “Here’s Nori texting Amaya, an estate adviser, about a two-bedroom home.
+It asks about rent, deposits and payment dates, then collects the reply for
+review. This is a simulated conversation; no real message is sent.”
 
 RECORDED VOICE MESSAGES
 
