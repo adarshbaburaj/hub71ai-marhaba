@@ -8,7 +8,7 @@
 
 .prompt {
   width: 100%;
-  max-width: 400px;
+  max-width: 520px;
   transform-origin: 50% 0;
 }
 
@@ -31,7 +31,7 @@
   max-width: none;
   max-height: min(600px, calc(100svh - 190px));
   margin: 0;
-  padding: 18px;
+  padding: 22px;
   border: 1px solid var(--line);
   border-radius: 16px;
   background: var(--surface);
@@ -66,7 +66,7 @@
 
 .prompt :global(.question-document .question-title) {
   margin: 0;
-  font-size: 22px;
+  font-size: 26px;
   line-height: 1.22;
   letter-spacing: -.8px;
   font-weight: 800;
@@ -85,15 +85,15 @@
 
 .prompt :global(.document-choice) {
   width: 100%;
-  min-height: 43px;
+  min-height: 48px;
   margin-left: 0;
-  padding: 9px 10px;
+  padding: 11px 12px;
   gap: 10px;
   border-radius: 7px;
 }
 
 .prompt :global(.document-choice-copy) {
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.5;
 }
 
@@ -114,9 +114,9 @@
 }
 
 .prompt :global(.question-document-actions .button) {
-  min-height: 36px;
-  padding: 8px 11px;
-  font-size: 11px;
+  min-height: 40px;
+  padding: 9px 12px;
+  font-size: 12px;
   gap: 7px;
 }
 
