@@ -91,8 +91,8 @@ export function NoriAtWork({ open, onClose }: NoriAtWorkProps) {
         {messages.slice(0, step + 1).map((message, index) => {
           const speaker = message.voice;
           const progress = speaker && position.speaker === speaker ? Math.min(1, position.time / durations[speaker]) : 0;
-          return <article key={index} className={cn(styles.message, styles[message.kind])} data-simulation-message={index} data-message-direction={message.kind === "nori" ? "outgoing" : "incoming"}>
-            <span className={styles.accessible}>{message.speaker}: </span><p>{message.text}</p>{speaker && <button type="button" className={styles.voice} aria-label={`Voice message · ${speaker === "nori" ? "Nori" : "estate agent"}`} aria-pressed={playingVoice === speaker} data-audio-progress={progress} onClick={() => { void playVoice(speaker); }}>
+          return <article key={index} className={styles.messageRow} data-simulation-message={index} data-message-direction={message.kind === "nori" ? "outgoing" : "incoming"}>
+            <div className={cn(styles.message, styles[message.kind])} data-chat-bubble="text"><span className={styles.accessible}>{message.speaker}: </span><p>{message.text}</p></div>{speaker && <button type="button" className={cn(styles.message, styles[message.kind], styles.voice)} data-chat-bubble="voice" aria-label={`Voice message · ${speaker === "nori" ? "Nori" : "estate agent"}`} aria-pressed={playingVoice === speaker} data-audio-progress={progress} onClick={() => { void playVoice(speaker); }}>
               <span className={styles.playIcon} aria-hidden="true">{playingVoice === speaker ? <Square size={12} fill="currentColor" /> : <Play size={13} fill="currentColor" />}</span><span className={styles.waveform} aria-hidden="true">{waveform.map((height, bar) => <i key={bar} style={{ height, opacity: progress > bar / waveform.length ? 1 : .35 }} />)}</span><span className={styles.duration} aria-hidden="true">{timeLabel(playingVoice === speaker ? position.time : Math.ceil(durations[speaker]))}</span>
             </button>}
           </article>;
