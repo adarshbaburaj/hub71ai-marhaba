@@ -1,0 +1,51 @@
+.layer {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+  color: var(--ink, #171717);
+  opacity: 0;
+  transition: opacity 160ms ease;
+}
+
+.layer[data-enabled="false"] {
+  display: none;
+}
+
+.layer[data-visible="true"] {
+  opacity: 1;
+}
+
+.ring,
+.dot {
+  position: absolute;
+  inset: 0 auto auto 0;
+  pointer-events: none;
+  border-radius: 50%;
+  will-change: transform;
+}
+
+.ring {
+  width: 24px;
+  height: 24px;
+  margin: -12px 0 0 -12px;
+  border: 1px solid currentColor;
+  opacity: 0.2;
+}
+
+.dot {
+  width: 3px;
+  height: 3px;
+  margin: -1.5px 0 0 -1.5px;
+  background: currentColor;
+  opacity: 0.45;
+}
+
+@media (prefers-reduced-motion: reduce), (hover: none), (pointer: coarse) {
+  .layer {
+    display: none;
+    transition: none;
+  }
+}

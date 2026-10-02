@@ -1,0 +1,131 @@
+.layout {
+  width: 100%;
+  max-width: 1480px;
+  min-height: calc(100svh - 185px);
+  margin: 0 auto;
+  padding: 36px 5% 58px;
+}
+
+.prompt {
+  width: 100%;
+  max-width: 440px;
+  transform-origin: 50% 0;
+}
+
+.prompt[data-question-transition="entering"] {
+  animation: prompt-in 220ms cubic-bezier(.2, .75, .3, 1) both;
+}
+
+.prompt[data-question-transition="exiting"] {
+  animation: prompt-out 140ms ease-in both;
+  pointer-events: none;
+}
+
+.prompt :global(.question-document) {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+  box-shadow: 0 14px 42px rgb(23 23 23 / 4%);
+  animation: none;
+}
+
+.prompt :global(.question-document-topline) {
+  margin-bottom: 18px;
+  font-size: 10px;
+  gap: 10px;
+}
+
+.prompt :global(.question-step-label) { font-size: 9px; }
+
+.prompt :global(.question-prompt) {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.prompt :global(.question-prompt) > span {
+  flex: 0 0 38px;
+  width: 38px;
+  margin-top: -2px;
+}
+
+.prompt :global(.question-title) {
+  margin: 0;
+  font-size: 24px;
+  line-height: 1.22;
+  letter-spacing: -.8px;
+  font-weight: 800;
+}
+
+.prompt :global(.document-choices) { gap: 3px; }
+
+.prompt :global(.document-choice) {
+  width: 100%;
+  min-height: 43px;
+  margin-left: 0;
+  padding: 9px 10px;
+  gap: 10px;
+  border-radius: 7px;
+}
+
+.prompt :global(.document-choice-copy) {
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.prompt :global(.document-choice-detail) { font-size: 11px; }
+.prompt :global(.document-choice-number) { flex: 0 0 21px; font-size: 10px; }
+.prompt :global(.document-input) { font-size: 19px; padding: 10px 0; }
+.prompt :global(.document-input-prefix) { font-size: 11px; }
+.prompt :global(.document-textarea) { font-size: 14px; min-height: 92px; }
+.prompt :global(.document-hint),
+.prompt :global(.document-priority-order),
+.prompt :global(.document-change-note) { margin-top: 12px; font-size: 11px; line-height: 1.65; }
+
+.prompt :global(.question-document-actions) {
+  margin-top: 20px;
+  padding-top: 14px;
+  gap: 9px;
+}
+
+.prompt :global(.question-document-actions .button) {
+  min-height: 36px;
+  padding: 8px 11px;
+  font-size: 11px;
+  gap: 7px;
+}
+
+.prompt :global(.question-document-actions .button-primary) { margin-right: 0; }
+.prompt :global(.question-document-actions .button-ghost) { padding-right: 0; padding-left: 0; }
+.prompt :global(.question-document-tools) { margin-top: 16px; gap: 14px; flex-wrap: wrap; }
+.prompt :global(.question-document-tools button) { font-size: 10px; }
+
+@keyframes prompt-in {
+  from { opacity: 0; transform: translateY(9px) scale(.985); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes prompt-out {
+  from { opacity: 1; transform: translateY(0) scale(1); }
+  to { opacity: 0; transform: translateY(-7px) scale(.985); }
+}
+
+@media (max-width: 850px) {
+  .layout { padding: 25px 6% 42px; }
+  .prompt { max-width: 440px; }
+  .prompt :global(.question-document) { padding: 18px; border-radius: 13px; }
+  .prompt :global(.question-title) { font-size: 23px; }
+  .prompt :global(.question-document-actions) { flex-wrap: wrap; }
+  .prompt :global(.document-choice) { min-height: 45px; }
+  .prompt :global(.question-document-actions .button) { min-height: 40px; }
+  .prompt :global(.question-document-tools button) { min-height: 24px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .prompt[data-question-transition] { animation: none; }
+}
